@@ -1,2 +1,2 @@
 # MUD.5
-MUD game from Dungeon
+## MUD game for Dungeon Enthusiast
