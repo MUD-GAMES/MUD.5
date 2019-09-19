@@ -1,26 +1,47 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import RoomInfo from './Components/RoomInfo'
+import Commands from './Components/Commands'
+import Login from './Components/Login'
+import Dungeon from './Components/Dungeon'
+import NavBar from './Components/NavBar'
+import {CssBaseline, Container} from '@material-ui/core'
+import ChatBox from './Components/ChatBox';
+import axios from 'axios'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      loggedIn: false
+    }
+
+  }
+  
+  tempChangeLogin = () => {
+    this.setState(prev => {
+      return {loggedIn: ! prev.loggedIn}
+    })
+  }
+
+  render() {
+    return (
+      <div>
+        <CssBaseline />
+        <NavBar tempChangeLogin={this.tempChangeLogin} />
+        {!this.state.loggedIn ? <Login /> : (
+
+          <Container>
+          <Dungeon />
+          <Commands />
+          <ChatBox />
+          <RoomInfo />
+
+          </Container>
+        )}
+       
+      </div>
+    )
+  }
 }
 
 export default App;
