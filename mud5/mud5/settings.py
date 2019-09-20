@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from dotenv import load_dotenv
+from pathlib import Path
+env_path = Path('.') / '.env'
+load_dotenv(dotenv_path=env_path)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -76,9 +80,14 @@ WSGI_APPLICATION = 'mud5.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'ddrotdru0bog2u',
+        'USER': 'ddrotdru0bog2u',
+        'PASSWORD': os.getenv("DB_KEY"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("PORT")
+    },
+     
 }
 
 
@@ -119,3 +128,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+
+
+# Configure Django App for Heroku.
+
+django_heroku.settings(locals())
