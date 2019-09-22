@@ -4,10 +4,12 @@ import {intent} from '../main.js'
 export let Header = function({render}) {
 
 	intent("navigateLogin", function(e) {
-		onNavigate('/login')
+		// onNavigate('/accounts/login')
+		window.history.pushState({}, '/accounts/login/', window.location.origin + "/accounts/login/")
+		window.location.reload()
 	})
 	intent("navigateHome", function(e) {
-		onNavigate("/")
+		onNavigate("/home")
 	})
 
 	let representation = () => `
@@ -25,3 +27,4 @@ export let Header = function({render}) {
 
 	return representation
 }
+

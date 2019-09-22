@@ -2,6 +2,8 @@ import SPARouter from "@kodnificent/sparouter"
 import {Header} from './src/header.js'
 import {Form} from './src/form.js'
 import {Blank} from './src/blank.js'
+import {Home} from './src/homePage.js'
+import axios from 'axios'
 
 // router creation and options
 const options = {historyMode : true}
@@ -28,15 +30,30 @@ export let value = function(el) {
 	return document.getElementById(el).value
 }
 
+
+export const getNames = () => {
+	// return axios.get('https://djangoboiler.herokuapp.com/players')
+	return axios.get('http://127.0.0.1:8000/players')
+		.then(res => {
+			console.log(res.data)
+			return res.data
+		})
+		.catch(err => {
+			console.log(err)
+		})
+}
+
+
 router.get('/', function(req, res) {
 	render(Header)
-	render(Blank, {},'main')
+	render(Home, {},'main')
 })
-router.get('/login', function(req, res) {
-	render(Header)
-	render(Form, {}, "main")
-})
+// router.get('/login', function(req, res) {
+// 	render(Header)
+// 	render(Form, {}, "main")
+// })
 
 // initialize router
 router.init()
+
 

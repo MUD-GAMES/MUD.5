@@ -15,16 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, re_path, include
-from django.views.generic.base import TemplateView 
+from django.views.generic.base import TemplateView
+from mud5games.views import FrontendRenderView, PlayersListView
 # from mud5games.views import FrontendRenderView
 # from django.conf.urls import include, url as re_path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    # path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    re_path('players', PlayersListView.as_view(), name="list")
 ]
 
 urlpatterns += [
-    re_path(r'(?P<path>.*)', TemplateView.as_view(template_name='front_end_entry.html'))
+    # re_path(r'(?P<path>.*)', TemplateView.as_view(template_name='front_end_entry.html'))
+    re_path('.*', FrontendRenderView.as_view())
 ]
+
