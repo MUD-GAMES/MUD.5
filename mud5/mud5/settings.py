@@ -54,8 +54,9 @@ ROOT_URLCONF = 'mud5.urls'
 
 TEMPLATES = [
     {
+
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -80,10 +81,9 @@ DATABASES = {
         'NAME':os.getenv("DB_NAME"),
         'USER': os.getenv("USER"),
         'PASSWORD': os.getenv("DB_KEY"),
-         'HOST': os.getenv("DB_HOST"),
-         'PORT': os.getenv("PORT")
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("PORT")
     },
-     
 }
 
 
@@ -130,3 +130,4 @@ STATIC_URL = '/static/'
 # Configure Django App for Heroku.
 
 django_heroku.settings(locals())
+LOGIN_REDIRECT_URL = '/'
