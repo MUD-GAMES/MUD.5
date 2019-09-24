@@ -201,22 +201,18 @@ var _main = require("../main.js");
 //
 var Home = function Home(_ref) {
   var render = _ref.render;
-  var state = {
-    theNames: [],
-    render: render
-  };
 
-  var names = function names() {
-    return (0, _main.getNames)().then(function (res) {
-      state.theNames = res;
-      state.render(representation());
-    });
-  };
-
-  names();
-
+  // let state = {theNames: [], render}
+  // const names = () => {
+  // 	return getNames()
+  // 		.then( res => {
+  // 			state.theNames = res
+  // 			state.render(representation())
+  // 		} )
+  // }
+  // names()
   var representation = function representation() {
-    return "\n\t\t\t<div class=\"homeCont\">\n\t\t\tThis is the Home Page\n\t\t\t".concat(namesList(state.theNames), "\n\t\t\t</div>\n\t");
+    return "\n\t\t\t<div class=\"homeCont\">\n\t\t\tThis is the Home Page\n\t\t\t// ".concat(namesList(state.theNames), "\n\t\t\t</div>\n\t");
   };
 
   var namesList = function namesList(names) {

@@ -13,19 +13,19 @@
 import {getNames} from '../main.js'
 
 export let Home = function({render}) {
-	let state = {theNames: [], render}
-	const names = () => {
-		return getNames()
-			.then( res => {
-				state.theNames = res
-				state.render(representation())
-			} )
-	}
-	names()
+	// let state = {theNames: [], render}
+	// const names = () => {
+	// 	return getNames()
+	// 		.then( res => {
+	// 			state.theNames = res
+	// 			state.render(representation())
+	// 		} )
+	// }
+	// names()
 		let representation = () => `
 			<div class="homeCont">
 			This is the Home Page
-			${namesList(state.theNames)}
+			// ${namesList(state.theNames)}
 			</div>
 	` 
 
