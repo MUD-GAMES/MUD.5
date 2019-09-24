@@ -4,7 +4,7 @@ Django settings for mud5 project.
 """
 
 import os
-from dotenv import load_dotenv
+from decouple import config
 from pathlib import Path
 import django_heroku
 
@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'mud5.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE':'django.db.backends.postgresql',
-        'NAME':os.getenv("DB_NAME"),
-        'USER': os.getenv("USER"),
-        'PASSWORD': os.getenv("DB_KEY"),
-        'HOST': os.getenv("DB_HOST"),
-        'PORT': os.getenv("PORT")
+        'NAME': config("DB_NAME"),
+        'USER': config("USER"),
+        'PASSWORD': config("DB_KEY"),
+        'HOST': config("DB_HOST"),
+        'PORT': config("PORT")
     },
 }
 

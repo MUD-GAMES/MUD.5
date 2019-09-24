@@ -12,6 +12,7 @@ python-dotenv = "*"
 django-heroku = "*"
 heroku = "*"
 gunicorn = "*"
+python-decouple = "*"
 
 [requires]
 python_version = "3.7"
