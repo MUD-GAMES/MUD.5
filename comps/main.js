@@ -3,6 +3,7 @@ import {Header} from './src/header.js'
 import {Form} from './src/form.js'
 import {Blank} from './src/blank.js'
 import {Home} from './src/homePage.js'
+import {GamePage} from './src/gamePage.js'
 import axios from 'axios'
 
 // router creation and options
@@ -30,6 +31,10 @@ export let value = function(el) {
 	return document.getElementById(el).value
 }
 
+export let innerHtml = function(el) {
+	return document.getElementById(el).innerHTML
+}
+
 
 export const getNames = () => {
 	// return axios.get('https://djangoboiler.herokuapp.com/players')
@@ -47,6 +52,16 @@ export const getNames = () => {
 router.get('/', function(req, res) {
 	render(Header)
 	render(Home, {},'main')
+})
+
+router.get('/login', function(req, res) {
+	render(Header)
+	render(Form, {},'main')
+})
+
+router.get('/gametime', function(req,res){
+	render(Header)
+	render(GamePage, {}, 'main')
 })
 // router.get('/login', function(req, res) {
 // 	render(Header)

@@ -13,6 +13,7 @@
 import {getNames} from '../main.js'
 
 export let Home = function({render}) {
+
 	// let state = {theNames: [], render}
 	// const names = () => {
 	// 	return getNames()
@@ -23,9 +24,8 @@ export let Home = function({render}) {
 	// }
 	// names()
 		let representation = () => `
-			<div class="homeCont">
+			<div id="homeCont">
 			This is the Home Page
-			// ${namesList(state.theNames)}
 			</div>
 	` 
 

@@ -12,6 +12,8 @@ export let Form = function({render}) {
 		return false
 	})
 
+	
+
 	let representation = () => `
 	<div class="formCont">
 		<h3>Register</h3>

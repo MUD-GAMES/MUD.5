@@ -16,8 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, re_path, include
 from django.views.generic.base import TemplateView
-# from mud5games.views import FrontendRenderView, PlayersListView
-from mud5games.views import FrontendRenderView
+from mud5games.views import FrontendRenderView, SignUp
 # from django.conf.urls import include, url as re_path
 
 urlpatterns = [
@@ -25,6 +24,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     # path('', TemplateView.as_view(template_name='home.html'), name='home'),
     # re_path('players', PlayersListView.as_view(), name="list")
+    path('signup/', SignUp.as_view(), name='signup')
 ]
 
 urlpatterns += [

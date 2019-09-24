@@ -22,7 +22,7 @@ exports.onNavigate = onNavigate;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getNames = exports.value = exports.intent = void 0;
+exports.getNames = exports.innerHtml = exports.value = exports.intent = void 0;
 
 var _sparouter = _interopRequireDefault(require("@kodnificent/sparouter"));
 
@@ -33,6 +33,8 @@ var _form = require("./src/form.js");
 var _blank = require("./src/blank.js");
 
 var _homePage = require("./src/homePage.js");
+
+var _gamePage = require("./src/gamePage.js");
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -73,6 +75,12 @@ var value = function value(el) {
 
 exports.value = value;
 
+var innerHtml = function innerHtml(el) {
+  return document.getElementById(el).innerHTML;
+};
+
+exports.innerHtml = innerHtml;
+
 var getNames = function getNames() {
   // return axios.get('https://djangoboiler.herokuapp.com/players')
   return _axios["default"].get('http://127.0.0.1:8000/players').then(function (res) {
@@ -87,6 +95,14 @@ exports.getNames = getNames;
 router.get('/', function (req, res) {
   render(_header.Header);
   render(_homePage.Home, {}, 'main');
+});
+router.get('/login', function (req, res) {
+  render(_header.Header);
+  render(_form.Form, {}, 'main');
+});
+router.get('/gametime', function (req, res) {
+  render(_header.Header);
+  render(_gamePage.GamePage, {}, 'main');
 }); // router.get('/login', function(req, res) {
 // 	render(Header)
 // 	render(Form, {}, "main")
@@ -95,7 +111,7 @@ router.get('/', function (req, res) {
 
 router.init();
 
-},{"./src/blank.js":3,"./src/form.js":4,"./src/header.js":5,"./src/homePage.js":6,"@kodnificent/sparouter":7,"axios":8}],3:[function(require,module,exports){
+},{"./src/blank.js":3,"./src/form.js":4,"./src/gamePage.js":5,"./src/header.js":6,"./src/homePage.js":7,"@kodnificent/sparouter":8,"axios":9}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -152,6 +168,53 @@ exports.Form = Form;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.GamePage = void 0;
+
+var _main = require("../main.js");
+
+var GamePage = function GamePage(_ref) {
+  var render = _ref.render;
+  // let state = { currentRoom: "", movement: "", player: "" }
+  var state = {
+    movement: "",
+    render: render
+  };
+  (0, _main.intent)("movementNorth", function (e) {
+    state.movement = (0, _main.innerHtml)("north");
+    console.log(state.movement);
+    return false;
+  });
+  (0, _main.intent)("movementSouth", function (e) {
+    state.movement = (0, _main.innerHtml)("south");
+    console.log(state.movement);
+    return false;
+  });
+  (0, _main.intent)("movementEast", function (e) {
+    state.movement = (0, _main.innerHtml)("east");
+    console.log(state.movement);
+    return false;
+  });
+  (0, _main.intent)("movementWest", function (e) {
+    state.movement = (0, _main.innerHtml)("west");
+    console.log(state.movement);
+    return false;
+  });
+
+  var representation = function representation() {
+    return "\n\t<div class=\"gamePageCont\">\n\t\t<div class=\"gameViewCont\">\n\t\t</div>\n\t\t<div class=\"sideViewCont\">\n\t\t\t<div class=\"roomInfo\">\n\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"items\">\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t<li>item 2</li>\n\t\t\t\t\t\t<li>item 3</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"playerInfo\">\n\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"items\">\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"controls\">\n\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t<div id=\"north\" onclick=movementNorth()>N</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t<div id=\"east\" onclick=movementEast()>E</div>\n\t\t\t\t\t\t<div id=\"west\" onclick=movementWest()>W</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div id=\"south\" onclick=movementSouth()>S</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t<div class=\"pickup\">\n\t\t\t\t\t\tPickup Item\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\tDrop Item\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n\t";
+  };
+
+  return representation;
+};
+
+exports.GamePage = GamePage;
+
+},{"../main.js":2}],6:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.Header = void 0;
 
 var _navigate = require("../helpers/navigate.js");
@@ -166,11 +229,14 @@ var Header = function Header(_ref) {
     window.location.reload();
   });
   (0, _main.intent)("navigateHome", function (e) {
-    (0, _navigate.onNavigate)("/home");
+    (0, _navigate.onNavigate)("/");
+  });
+  (0, _main.intent)("navigateGame", function (e) {
+    (0, _navigate.onNavigate)("/gametime");
   });
 
   var representation = function representation() {
-    return "\n\t<div class=\"navCont\">\n\t\t<nav class=\"navbar\">\n\t\t\t<ul>\n\t\t\t\t<li class=\"navButton\" onclick=navigateHome()>Home</li>\n\t\t\t\t<li class=\"navButton\">Play</li>\n\t\t\t\t<li class=\"navButton\">Account</li>\n\t\t\t\t<li class=\"navButton\" onclick=navigateLogin()>Login</li>\n\t\t\t</ul>\n\t\t</nav>\n\t</div>\n\t";
+    return "\n\t<div class=\"navCont\">\n\t\t<nav class=\"navbar\">\n\t\t\t<ul>\n\t\t\t\t<li class=\"navButton\" onclick=navigateHome()>Home</li>\n\t\t\t\t<li class=\"navButton\" onclick=navigateGame()>Play Game</li>\n\t\t\t\t<li class=\"navButton\">Account</li>\n\t\t\t\t<li class=\"navButton\" onclick=navigateLogin()>Login</li>\n\t\t\t</ul>\n\t\t</nav>\n\t</div>\n\t";
   };
 
   return representation;
@@ -178,7 +244,7 @@ var Header = function Header(_ref) {
 
 exports.Header = Header;
 
-},{"../helpers/navigate.js":1,"../main.js":2}],6:[function(require,module,exports){
+},{"../helpers/navigate.js":1,"../main.js":2}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -212,7 +278,7 @@ var Home = function Home(_ref) {
   // }
   // names()
   var representation = function representation() {
-    return "\n\t\t\t<div class=\"homeCont\">\n\t\t\tThis is the Home Page\n\t\t\t// ".concat(namesList(state.theNames), "\n\t\t\t</div>\n\t");
+    return "\n\t\t\t<div id=\"homeCont\">\n\t\t\tThis is the Home Page\n\t\t\t</div>\n\t";
   };
 
   var namesList = function namesList(names) {
@@ -230,7 +296,7 @@ var Home = function Home(_ref) {
 
 exports.Home = Home;
 
-},{"../main.js":2}],7:[function(require,module,exports){
+},{"../main.js":2}],8:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -1199,9 +1265,9 @@ function () {
 /******/ })["default"];
 });
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":10}],9:[function(require,module,exports){
+},{"./lib/axios":11}],10:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1377,7 +1443,7 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-},{"../core/createError":16,"./../core/settle":20,"./../helpers/buildURL":24,"./../helpers/cookies":26,"./../helpers/isURLSameOrigin":28,"./../helpers/parseHeaders":30,"./../utils":32}],10:[function(require,module,exports){
+},{"../core/createError":17,"./../core/settle":21,"./../helpers/buildURL":25,"./../helpers/cookies":27,"./../helpers/isURLSameOrigin":29,"./../helpers/parseHeaders":31,"./../utils":33}],11:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -1432,7 +1498,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":11,"./cancel/CancelToken":12,"./cancel/isCancel":13,"./core/Axios":14,"./core/mergeConfig":19,"./defaults":22,"./helpers/bind":23,"./helpers/spread":31,"./utils":32}],11:[function(require,module,exports){
+},{"./cancel/Cancel":12,"./cancel/CancelToken":13,"./cancel/isCancel":14,"./core/Axios":15,"./core/mergeConfig":20,"./defaults":23,"./helpers/bind":24,"./helpers/spread":32,"./utils":33}],12:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1453,7 +1519,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -1512,14 +1578,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":11}],13:[function(require,module,exports){
+},{"./Cancel":12}],14:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1607,7 +1673,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"../helpers/buildURL":24,"./../utils":32,"./InterceptorManager":15,"./dispatchRequest":17,"./mergeConfig":19}],15:[function(require,module,exports){
+},{"../helpers/buildURL":25,"./../utils":33,"./InterceptorManager":16,"./dispatchRequest":18,"./mergeConfig":20}],16:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1661,7 +1727,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":32}],16:[function(require,module,exports){
+},{"./../utils":33}],17:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -1681,7 +1747,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":18}],17:[function(require,module,exports){
+},{"./enhanceError":19}],18:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1769,7 +1835,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/isCancel":13,"../defaults":22,"./../helpers/combineURLs":25,"./../helpers/isAbsoluteURL":27,"./../utils":32,"./transformData":21}],18:[function(require,module,exports){
+},{"../cancel/isCancel":14,"../defaults":23,"./../helpers/combineURLs":26,"./../helpers/isAbsoluteURL":28,"./../utils":33,"./transformData":22}],19:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1813,7 +1879,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],19:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -1866,7 +1932,7 @@ module.exports = function mergeConfig(config1, config2) {
   return config;
 };
 
-},{"../utils":32}],20:[function(require,module,exports){
+},{"../utils":33}],21:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -1893,7 +1959,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":16}],21:[function(require,module,exports){
+},{"./createError":17}],22:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1915,7 +1981,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../utils":32}],22:[function(require,module,exports){
+},{"./../utils":33}],23:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -2017,7 +2083,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this,require('_process'))
-},{"./adapters/http":9,"./adapters/xhr":9,"./helpers/normalizeHeaderName":29,"./utils":32,"_process":34}],23:[function(require,module,exports){
+},{"./adapters/http":10,"./adapters/xhr":10,"./helpers/normalizeHeaderName":30,"./utils":33,"_process":35}],24:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -2030,7 +2096,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],24:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2103,7 +2169,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":32}],25:[function(require,module,exports){
+},{"./../utils":33}],26:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2119,7 +2185,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2174,7 +2240,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":32}],27:[function(require,module,exports){
+},{"./../utils":33}],28:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2190,7 +2256,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2260,7 +2326,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":32}],29:[function(require,module,exports){
+},{"./../utils":33}],30:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -2274,7 +2340,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":32}],30:[function(require,module,exports){
+},{"../utils":33}],31:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2329,7 +2395,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":32}],31:[function(require,module,exports){
+},{"./../utils":33}],32:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2358,7 +2424,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],32:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -2694,7 +2760,7 @@ module.exports = {
   trim: trim
 };
 
-},{"./helpers/bind":23,"is-buffer":33}],33:[function(require,module,exports){
+},{"./helpers/bind":24,"is-buffer":34}],34:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -2707,7 +2773,7 @@ module.exports = function isBuffer (obj) {
     typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
 }
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
