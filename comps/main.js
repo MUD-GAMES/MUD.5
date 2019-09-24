@@ -35,6 +35,9 @@ export let innerHtml = function(el) {
 	return document.getElementById(el).innerHTML
 }
 
+export let listItems = function(className) {
+	return document.getElementsByClassName(className)
+}
 
 export const getNames = () => {
 	// return axios.get('https://djangoboiler.herokuapp.com/players')
@@ -47,6 +50,7 @@ export const getNames = () => {
 			console.log(err)
 		})
 }
+
 
 
 router.get('/', function(req, res) {

@@ -22,7 +22,7 @@ exports.onNavigate = onNavigate;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getNames = exports.innerHtml = exports.value = exports.intent = void 0;
+exports.getNames = exports.listItems = exports.innerHtml = exports.value = exports.intent = void 0;
 
 var _sparouter = _interopRequireDefault(require("@kodnificent/sparouter"));
 
@@ -80,6 +80,12 @@ var innerHtml = function innerHtml(el) {
 };
 
 exports.innerHtml = innerHtml;
+
+var listItems = function listItems(className) {
+  return document.getElementsByClassName(className);
+};
+
+exports.listItems = listItems;
 
 var getNames = function getNames() {
   // return axios.get('https://djangoboiler.herokuapp.com/players')
@@ -177,6 +183,7 @@ var GamePage = function GamePage(_ref) {
   // let state = { currentRoom: "", movement: "", player: "" }
   var state = {
     movement: "",
+    item: "",
     render: render
   };
   (0, _main.intent)("movementNorth", function (e) {
@@ -199,9 +206,17 @@ var GamePage = function GamePage(_ref) {
     console.log(state.movement);
     return false;
   });
+  (0, _main.intent)("pickUpItem", function (e) {
+    var items = Array.from((0, _main.listItems)('items'));
+    var checked = items.filter(function (i) {
+      return i.checked;
+    });
+    state.item = checked[0].value;
+    console.log(state.item);
+  });
 
   var representation = function representation() {
-    return "\n\t<div class=\"gamePageCont\">\n\t\t<div class=\"gameViewCont\">\n\t\t</div>\n\t\t<div class=\"sideViewCont\">\n\t\t\t<div class=\"roomInfo\">\n\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"items\">\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t<li>item 2</li>\n\t\t\t\t\t\t<li>item 3</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"playerInfo\">\n\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"items\">\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"controls\">\n\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t<div id=\"north\" onclick=movementNorth()>N</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t<div id=\"east\" onclick=movementEast()>E</div>\n\t\t\t\t\t\t<div id=\"west\" onclick=movementWest()>W</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div id=\"south\" onclick=movementSouth()>S</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t<div class=\"pickup\">\n\t\t\t\t\t\tPickup Item\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\tDrop Item\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n\t";
+    return "\n\t<div class=\"gamePageCont\">\n\t\t<div class=\"gameViewCont\">\n\t\t</div>\n\t\t<div class=\"sideViewCont\">\n\t\t\t<div class=\"roomInfo\">\n\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t</ul>\n\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\tPickup Item\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\tDrop Item\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"playerInfo\">\n\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"item\">\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"controls\">\n\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t<div id=\"north\" onclick=movementNorth()>N</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t<div id=\"east\" onclick=movementEast()>E</div>\n\t\t\t\t\t\t<div id=\"west\" onclick=movementWest()>W</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div id=\"south\" onclick=movementSouth()>S</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n\t";
   };
 
   return representation;
