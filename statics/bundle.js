@@ -59,6 +59,7 @@ var render = function render(component) {
 
   var stateRepresentation = component(initState);
   initState.render(typeof stateRepresentation === 'function' ? stateRepresentation() : stateRepresentation);
+  console.log(window.history.forward());
 }; // adds the function call "i" to the window object. Allows it to be called
 
 

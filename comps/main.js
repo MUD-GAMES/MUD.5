@@ -21,6 +21,7 @@ let render = function (component, initState = {}, mountNode = 'app') {
   initState.render((typeof stateRepresentation === 'function' ) ? stateRepresentation() : stateRepresentation)
 }
 
+
 // adds the function call "i" to the window object. Allows it to be called
 export let intent = function(i,f) {
 	window[i || "_"] = f
