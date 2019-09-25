@@ -78,15 +78,15 @@ WSGI_APPLICATION = 'mud5.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE':'django.db.backends.postgresql',
-        'NAME':'mudproject',
-        'USER': 'zac',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'mudproject',
+        'USER': 'postgres',
         'PASSWORD': 'default',
-         'HOST': 'localhost',
-         'PORT':'5432' 
-        
+        'HOST': 'localhost',
+        'PORT': '5432'
+
     },
-     
+
 }
 
 
@@ -132,9 +132,7 @@ STATICFILES_DIRS = [
 ]
 
 
-
 # Configure Django App for Heroku.
 
 django_heroku.settings(locals())
 LOGIN_REDIRECT_URL = '/'
-
