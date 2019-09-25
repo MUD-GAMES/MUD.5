@@ -52,6 +52,18 @@ export const getNames = () => {
 		})
 }
 
+export const createNewUser = (user) => {
+	console.log(user)
+	return axios
+		.post('http://127.0.0.1:8000/api/auth/register/', user)
+		.then(res => {
+			return (res.data)
+		})
+		.catch(err => {
+			console.log(err)
+		})
+}
+
 
 
 router.get('/', function(req, res) {
@@ -68,10 +80,6 @@ router.get('/gametime', function(req,res){
 	render(Header)
 	render(GamePage, {}, 'main')
 })
-// router.get('/login', function(req, res) {
-// 	render(Header)
-// 	render(Form, {}, "main")
-// })
 
 // initialize router
 router.init()

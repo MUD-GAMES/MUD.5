@@ -1,15 +1,4 @@
 
-// const getNames = () => {
-// 	axios.get('http://127.0.0.1:8000/players')
-// 		.then(res => {
-// 			console.log(res.data)
-// 			return res.data
-// 		})
-// 		.catch(err => {
-// 			console.log(err)
-// 		})
-// }
-//
 import {getNames} from '../main.js'
 
 export let Home = function({render}) {

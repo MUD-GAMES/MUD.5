@@ -1,14 +1,16 @@
 import { intent } from '../main.js'
 import {value} from '../main.js'
+import {createNewUser} from '../main.js'
 
 export let Form = function({render}) {
-	let state = { username: "", email: "", password: "", render }
+	let state = { User_Name: "", Email: "", Password: "" }
 
 	intent("capInput", function(e) {
-		state.username = value("username")
-		state.email = value("email")
-		state.password = value("password")
-		state.render(representation())
+		state.User_Name = value("username")
+		state.Email = value("email")
+		state.Password = value("password")
+		// state.render(representation())
+		createNewUser(state)
 		return false
 	})
 
@@ -17,7 +19,7 @@ export let Form = function({render}) {
 	let representation = () => `
 	<div class="formCont">
 		<h3>Register</h3>
-		<form class="form" action="">
+		<div class="form">
 			<div class="userNameCont">
 				<label class="regLab" for="username">Username</label>
 				<input id="username" type="text" >
@@ -27,15 +29,11 @@ export let Form = function({render}) {
 				<input id="email" type="email">
 			</div>
 			<div class="passwordCont">
-				<label class="reg" for="passOne">Password One</label>
+				<label class="reg" for="pass">Password</label>
 				<input id="password" type="password">
 			</div>
-			<div class="passwordCont">
-				<label class="reg" for="passTwo">Password Two</label>
-				<input type="password">
-			</div>
 			<button class="submit" onclick=capInput()>Test</button>
-		</form>
+		</div>
 	</div>
 	`
 

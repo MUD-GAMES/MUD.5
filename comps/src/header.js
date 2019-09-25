@@ -4,9 +4,7 @@ import {intent} from '../main.js'
 export let Header = function({render}) {
 
 	intent("navigateLogin", function(e) {
-		// onNavigate('/accounts/login')
-		window.history.pushState({}, '/accounts/login/', window.location.origin + "/accounts/login/")
-		window.location.reload()
+		onNavigate('/login')
 	})
 	intent("navigateHome", function(e) {
 		onNavigate("/")

@@ -22,7 +22,7 @@ exports.onNavigate = onNavigate;
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.getNames = exports.listItems = exports.innerHtml = exports.value = exports.intent = void 0;
+exports.createNewUser = exports.getNames = exports.listItems = exports.innerHtml = exports.value = exports.intent = void 0;
 
 var _sparouter = _interopRequireDefault(require("@kodnificent/sparouter"));
 
@@ -59,7 +59,6 @@ var render = function render(component) {
 
   var stateRepresentation = component(initState);
   initState.render(typeof stateRepresentation === 'function' ? stateRepresentation() : stateRepresentation);
-  console.log(window.history.forward());
 }; // adds the function call "i" to the window object. Allows it to be called
 
 
@@ -99,6 +98,17 @@ var getNames = function getNames() {
 };
 
 exports.getNames = getNames;
+
+var createNewUser = function createNewUser(user) {
+  console.log(user);
+  return _axios["default"].post('http://127.0.0.1:8000/api/auth/register/', user).then(function (res) {
+    return res.data;
+  })["catch"](function (err) {
+    console.log(err);
+  });
+};
+
+exports.createNewUser = createNewUser;
 router.get('/', function (req, res) {
   render(_header.Header);
   render(_homePage.Home, {}, 'main');
@@ -110,11 +120,7 @@ router.get('/login', function (req, res) {
 router.get('/gametime', function (req, res) {
   render(_header.Header);
   render(_gamePage.GamePage, {}, 'main');
-}); // router.get('/login', function(req, res) {
-// 	render(Header)
-// 	render(Form, {}, "main")
-// })
-// initialize router
+}); // initialize router
 
 router.init();
 
@@ -147,21 +153,21 @@ var _main = require("../main.js");
 var Form = function Form(_ref) {
   var render = _ref.render;
   var state = {
-    username: "",
-    email: "",
-    password: "",
-    render: render
+    User_Name: "",
+    Email: "",
+    Password: ""
   };
   (0, _main.intent)("capInput", function (e) {
-    state.username = (0, _main.value)("username");
-    state.email = (0, _main.value)("email");
-    state.password = (0, _main.value)("password");
-    state.render(representation());
+    state.User_Name = (0, _main.value)("username");
+    state.Email = (0, _main.value)("email");
+    state.Password = (0, _main.value)("password"); // state.render(representation())
+
+    console.log((0, _main.createNewUser)(state));
     return false;
   });
 
   var representation = function representation() {
-    return "\n\t<div class=\"formCont\">\n\t\t<h3>Register</h3>\n\t\t<form class=\"form\" action=\"\">\n\t\t\t<div class=\"userNameCont\">\n\t\t\t\t<label class=\"regLab\" for=\"username\">Username</label>\n\t\t\t\t<input id=\"username\" type=\"text\" >\n\t\t\t</div>\n\t\t\t<div class=\"emailCont\">\n\t\t\t\t<label class=\"regLab\" for=\"email\">Email</label>\n\t\t\t\t<input id=\"email\" type=\"email\">\n\t\t\t</div>\n\t\t\t<div class=\"passwordCont\">\n\t\t\t\t<label class=\"reg\" for=\"passOne\">Password One</label>\n\t\t\t\t<input id=\"password\" type=\"password\">\n\t\t\t</div>\n\t\t\t<div class=\"passwordCont\">\n\t\t\t\t<label class=\"reg\" for=\"passTwo\">Password Two</label>\n\t\t\t\t<input type=\"password\">\n\t\t\t</div>\n\t\t\t<button class=\"submit\" onclick=capInput()>Test</button>\n\t\t</form>\n\t</div>\n\t";
+    return "\n\t<div class=\"formCont\">\n\t\t<h3>Register</h3>\n\t\t<div class=\"form\">\n\t\t\t<div class=\"userNameCont\">\n\t\t\t\t<label class=\"regLab\" for=\"username\">Username</label>\n\t\t\t\t<input id=\"username\" type=\"text\" >\n\t\t\t</div>\n\t\t\t<div class=\"emailCont\">\n\t\t\t\t<label class=\"regLab\" for=\"email\">Email</label>\n\t\t\t\t<input id=\"email\" type=\"email\">\n\t\t\t</div>\n\t\t\t<div class=\"passwordCont\">\n\t\t\t\t<label class=\"reg\" for=\"pass\">Password</label>\n\t\t\t\t<input id=\"password\" type=\"password\">\n\t\t\t</div>\n\t\t\t<button class=\"submit\" onclick=capInput()>Test</button>\n\t\t</div>\n\t</div>\n\t";
   };
 
   return representation;
@@ -240,9 +246,7 @@ var _main = require("../main.js");
 var Header = function Header(_ref) {
   var render = _ref.render;
   (0, _main.intent)("navigateLogin", function (e) {
-    // onNavigate('/accounts/login')
-    window.history.pushState({}, '/accounts/login/', window.location.origin + "/accounts/login/");
-    window.location.reload();
+    (0, _navigate.onNavigate)('/login');
   });
   (0, _main.intent)("navigateHome", function (e) {
     (0, _navigate.onNavigate)("/");
@@ -270,17 +274,6 @@ exports.Home = void 0;
 
 var _main = require("../main.js");
 
-// const getNames = () => {
-// 	axios.get('http://127.0.0.1:8000/players')
-// 		.then(res => {
-// 			console.log(res.data)
-// 			return res.data
-// 		})
-// 		.catch(err => {
-// 			console.log(err)
-// 		})
-// }
-//
 var Home = function Home(_ref) {
   var render = _ref.render;
 
