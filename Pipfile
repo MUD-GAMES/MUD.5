@@ -13,6 +13,7 @@ django-heroku = "*"
 heroku = "*"
 gunicorn = "*"
 python-decouple = "*"
+pipfile = "*"
 
 [requires]
 python_version = "3.7"
