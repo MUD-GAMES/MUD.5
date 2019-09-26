@@ -1,7 +1,23 @@
 import { intent, value, innerHtml, listItems} from '../main.js'
+import {loadUser} from '../helpers/loginHelper.js'
+import axios from 'axios'
+
 export let GamePage = function({render}) {
 	// let state = { currentRoom: "", movement: "", player: "" }
-	let state = { movement: "", item: "", render}
+	let state = { loggedIn: false, movement: "", item: "", render}
+
+	const theLogIn = (axios) => {
+		return loadUser(axios)
+			.then(res => {
+				if (res.username) {
+					state.loggedIn = true
+					state.render(representation())
+				}
+			})
+	}
+
+	theLogIn(axios)
+	
 
 	intent("movementNorth", function(e) {
 		state.movement = innerHtml("north")
@@ -32,6 +48,7 @@ export let GamePage = function({render}) {
 		state.item = checked[0].value
 		console.log(state.item)
 	})
+
 
 
 
@@ -91,5 +108,4 @@ export let GamePage = function({render}) {
 	</div>
 
 	`
-	return representation
 }

@@ -1,5 +1,6 @@
 
-import {getNames} from '../main.js'
+import {getNames, intent} from '../main.js'
+import {onNavigate} from '../helpers/navigate.js'
 
 export let Home = function({render}) {
 
@@ -12,23 +13,29 @@ export let Home = function({render}) {
 	// 		} )
 	// }
 	// names()
+	intent('navigateSignup', function(e) {
+		onNavigate('/signup')
+	})
+		
+	
 		let representation = () => `
 			<div id="homeCont">
 			This is the Home Page
+			<button onclick=navigateSignup()>Sign Up To Play Now!</button>
 			</div>
 	` 
 
-	let namesList = (names) => {
-		if (names != []) {
-			return `
-				<ul>
-				${names.map(n => `<li>${n.name}</li>`)}
-				</ul>
-		`
-		} else {
-			return `<div></div>`
-		}
-	} 
+	// let namesList = (names) => {
+	// 	if (names != []) {
+	// 		return `
+	// 			<ul>
+	// 			${names.map(n => `<li>${n.name}</li>`)}
+	// 			</ul>
+	// 	`
+	// 	} else {
+	// 		return `<div></div>`
+	// 	}
+	// } 
 		return representation
 }
 

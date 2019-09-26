@@ -4,6 +4,69 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.logInUser = exports.createNewUser = exports.loadUser = exports.userData = void 0;
+
+var _axios = _interopRequireDefault(require("axios"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var userData;
+exports.userData = userData;
+
+var loadUser = function loadUser(axios) {
+  var token = localStorage.getItem('token');
+  var headers = {
+    "Content-Type": "application/json"
+  };
+
+  if (token) {
+    headers["Authorization"] = "Token ".concat(token);
+    return axios.get('http://127.0.0.1:8000/api/auth/user/', {
+      headers: headers
+    }).then(function (res) {
+      return res.data;
+    })["catch"](function (err) {
+      console.log(err);
+    });
+  }
+};
+
+exports.loadUser = loadUser;
+
+var createNewUser = function createNewUser(axios, user) {
+  console.log(user);
+  return axios.post('http://127.0.0.1:8000/api/auth/register/', user).then(function (res) {
+    console.log(res.data);
+    return res.data;
+  })["catch"](function (err) {
+    console.log(err.response);
+  });
+};
+
+exports.createNewUser = createNewUser;
+
+var logInUser = function logInUser(axios, redirect, user) {
+  console.log(user);
+  return axios.post('http://127.0.0.1:8000/api/auth/login/', user).then(function (res) {
+    window.localStorage.setItem("token", res.data.token);
+    window.localStorage.setItem("username", res.data.user.username);
+    window.localStorage.setItem("id", res.data.user.id);
+    redirect('/gametime');
+    console.log(res.data);
+    return res.data;
+  })["catch"](function (err) {
+    console.log(err);
+  });
+};
+
+exports.logInUser = logInUser;
+
+},{"axios":10}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 exports.onNavigate = void 0;
 
 var onNavigate = function onNavigate(path) {
@@ -16,13 +79,13 @@ var onNavigate = function onNavigate(path) {
 
 exports.onNavigate = onNavigate;
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.createNewUser = exports.getNames = exports.listItems = exports.innerHtml = exports.value = exports.intent = void 0;
+exports.listItems = exports.innerHtml = exports.value = exports.intent = void 0;
 
 var _sparouter = _interopRequireDefault(require("@kodnificent/sparouter"));
 
@@ -49,7 +112,6 @@ var router = new _sparouter["default"](options);
 var render = function render(component) {
   var initState = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
   var mountNode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'app';
-  console.log("ran");
 
   initState.render = function (stateRepresentation
   /* , options = {} */
@@ -83,39 +145,32 @@ exports.innerHtml = innerHtml;
 
 var listItems = function listItems(className) {
   return document.getElementsByClassName(className);
-};
+}; // export const getNames = () => {
+// 	// return axios.get('https://djangoboiler.herokuapp.com/players')
+// 	return axios.get('http://127.0.0.1:8000/players')
+// 		.then(res => {
+// 			console.log(res.data)
+// 			return res.data
+// 		})
+// 		.catch(err => {
+// 			console.log(err)
+// 		})
+// }
+//
+
 
 exports.listItems = listItems;
-
-var getNames = function getNames() {
-  // return axios.get('https://djangoboiler.herokuapp.com/players')
-  return _axios["default"].get('http://127.0.0.1:8000/players').then(function (res) {
-    console.log(res.data);
-    return res.data;
-  })["catch"](function (err) {
-    console.log(err);
-  });
-};
-
-exports.getNames = getNames;
-
-var createNewUser = function createNewUser(user) {
-  console.log(user);
-  return _axios["default"].post('http://127.0.0.1:8000/api/auth/register/', user).then(function (res) {
-    return res.data;
-  })["catch"](function (err) {
-    console.log(err);
-  });
-};
-
-exports.createNewUser = createNewUser;
 router.get('/', function (req, res) {
   render(_header.Header);
   render(_homePage.Home, {}, 'main');
 });
+router.get('/signup', function (req, res) {
+  render(_header.Header);
+  render(_form.SignUpForm, {}, 'main');
+});
 router.get('/login', function (req, res) {
   render(_header.Header);
-  render(_form.Form, {}, 'main');
+  render(_form.LogInForm, {}, 'main');
 });
 router.get('/gametime', function (req, res) {
   render(_header.Header);
@@ -124,7 +179,7 @@ router.get('/gametime', function (req, res) {
 
 router.init();
 
-},{"./src/blank.js":3,"./src/form.js":4,"./src/gamePage.js":5,"./src/header.js":6,"./src/homePage.js":7,"@kodnificent/sparouter":8,"axios":9}],3:[function(require,module,exports){
+},{"./src/blank.js":4,"./src/form.js":5,"./src/gamePage.js":6,"./src/header.js":7,"./src/homePage.js":8,"@kodnificent/sparouter":9,"axios":10}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -140,42 +195,74 @@ var Blank = function Blank(_ref) {
 
 exports.Blank = Blank;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Form = void 0;
+exports.LogInForm = exports.SignUpForm = void 0;
 
 var _main = require("../main.js");
 
-var Form = function Form(_ref) {
+var _loginHelper = require("../helpers/loginHelper.js");
+
+var _navigate = require("../helpers/navigate.js");
+
+var _axios = _interopRequireDefault(require("axios"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+var SignUpForm = function SignUpForm(_ref) {
   var render = _ref.render;
   var state = {
-    User_Name: "",
-    Email: "",
-    Password: ""
+    username: "",
+    password: "",
+    email: ""
   };
   (0, _main.intent)("capInput", function (e) {
-    state.User_Name = (0, _main.value)("username");
-    state.Email = (0, _main.value)("email");
-    state.Password = (0, _main.value)("password"); // state.render(representation())
+    state.username = (0, _main.value)("username");
+    state.email = (0, _main.value)("email");
+    state.password = (0, _main.value)("password"); // state.render(representation())
 
-    console.log((0, _main.createNewUser)(state));
+    (0, _loginHelper.createNewUser)(_axios["default"], state);
+    console.log(state);
     return false;
   });
 
   var representation = function representation() {
-    return "\n\t<div class=\"formCont\">\n\t\t<h3>Register</h3>\n\t\t<div class=\"form\">\n\t\t\t<div class=\"userNameCont\">\n\t\t\t\t<label class=\"regLab\" for=\"username\">Username</label>\n\t\t\t\t<input id=\"username\" type=\"text\" >\n\t\t\t</div>\n\t\t\t<div class=\"emailCont\">\n\t\t\t\t<label class=\"regLab\" for=\"email\">Email</label>\n\t\t\t\t<input id=\"email\" type=\"email\">\n\t\t\t</div>\n\t\t\t<div class=\"passwordCont\">\n\t\t\t\t<label class=\"reg\" for=\"pass\">Password</label>\n\t\t\t\t<input id=\"password\" type=\"password\">\n\t\t\t</div>\n\t\t\t<button class=\"submit\" onclick=capInput()>Test</button>\n\t\t</div>\n\t</div>\n\t";
+    return "\n\t<div class=\"formCont\">\n\t\t<h3>Sign UP</h3>\n\t\t<div class=\"form\">\n\t\t\t<div class=\"userNameCont\">\n\t\t\t\t<label class=\"regLab\" for=\"username\">Username</label>\n\t\t\t\t<input id=\"username\" type=\"text\" >\n\t\t\t</div>\n\t\t\t<div class=\"emailCont\">\n\t\t\t\t<label class=\"regLab\" for=\"email\">Email</label>\n\t\t\t\t<input id=\"email\" type=\"email\">\n\t\t\t</div>\n\t\t\t<div class=\"passwordCont\">\n\t\t\t\t<label class=\"reg\" for=\"pass\">Password</label>\n\t\t\t\t<input id=\"password\" type=\"password\">\n\t\t\t</div>\n\t\t\t<button class=\"submit\" onclick=capInput()>SignUP</button>\n\t\t</div>\n\t</div>\n\t";
   };
 
   return representation;
 };
 
-exports.Form = Form;
+exports.SignUpForm = SignUpForm;
 
-},{"../main.js":2}],5:[function(require,module,exports){
+var LogInForm = function LogInForm(_ref2) {
+  var render = _ref2.render;
+  var state = {
+    username: "",
+    password: ""
+  };
+  (0, _main.intent)("capInput", function (e) {
+    state.username = (0, _main.value)("username");
+    state.password = (0, _main.value)("password"); // state.render(representation())
+
+    (0, _loginHelper.logInUser)(_axios["default"], _navigate.onNavigate, state);
+    return false;
+  });
+
+  var representation = function representation() {
+    return "\n\t<div class=\"formCont\">\n\t\t<h3>Log In</h3>\n\t\t<div class=\"form\">\n\t\t\t<div class=\"userNameCont\">\n\t\t\t\t<label class=\"regLab\" for=\"username\">Username</label>\n\t\t\t\t<input id=\"username\" type=\"text\" >\n\t\t\t</div>\n\t\t\t<div class=\"passwordCont\">\n\t\t\t\t<label class=\"reg\" for=\"pass\">Password</label>\n\t\t\t\t<input id=\"password\" type=\"password\">\n\t\t\t</div>\n\t\t\t<button class=\"submit\" onclick=capInput()>Login</button>\n\t\t</div>\n\t</div>\n\t";
+  };
+
+  return representation;
+};
+
+exports.LogInForm = LogInForm;
+
+},{"../helpers/loginHelper.js":1,"../helpers/navigate.js":2,"../main.js":3,"axios":10}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -185,14 +272,32 @@ exports.GamePage = void 0;
 
 var _main = require("../main.js");
 
+var _loginHelper = require("../helpers/loginHelper.js");
+
+var _axios = _interopRequireDefault(require("axios"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
 var GamePage = function GamePage(_ref) {
   var render = _ref.render;
   // let state = { currentRoom: "", movement: "", player: "" }
   var state = {
+    loggedIn: false,
     movement: "",
     item: "",
     render: render
   };
+
+  var theLogIn = function theLogIn(axios) {
+    return (0, _loginHelper.loadUser)(axios).then(function (res) {
+      if (res.username) {
+        state.loggedIn = true;
+        state.render(representation());
+      }
+    });
+  };
+
+  theLogIn(_axios["default"]);
   (0, _main.intent)("movementNorth", function (e) {
     state.movement = (0, _main.innerHtml)("north");
     console.log(state.movement);
@@ -223,7 +328,11 @@ var GamePage = function GamePage(_ref) {
   });
 
   var representation = function representation() {
-    return "\n\t<div class=\"gamePageCont\">\n\t\t<div class=\"gameViewCont\">\n\t\t</div>\n\t\t<div class=\"sideViewCont\">\n\t\t\t<div class=\"roomInfo\">\n\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t</ul>\n\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\tPickup Item\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\tDrop Item\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"playerInfo\">\n\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"item\">\n\t\t\t\t\t<ul>\n\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t</ul>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t\t<div class=\"controls\">\n\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t<div id=\"north\" onclick=movementNorth()>N</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t<div id=\"east\" onclick=movementEast()>E</div>\n\t\t\t\t\t\t<div id=\"west\" onclick=movementWest()>W</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div id=\"south\" onclick=movementSouth()>S</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t</div>\n\n\t";
+    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div class=\"gameViewCont\">\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\t\tPickup Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\t\tDrop Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" onclick=movementNorth()>N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" onclick=movementEast()>E</div>\n\t\t\t\t\t\t\t<div id=\"west\" onclick=movementWest()>W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" onclick=movementSouth()>S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>" : "".concat(notLoggedIn()), "\n\t");
+  };
+
+  var notLoggedIn = function notLoggedIn() {
+    return "<div class=\"not\">Please log in to Play</div>";
   };
 
   return representation;
@@ -231,7 +340,7 @@ var GamePage = function GamePage(_ref) {
 
 exports.GamePage = GamePage;
 
-},{"../main.js":2}],6:[function(require,module,exports){
+},{"../helpers/loginHelper.js":1,"../main.js":3,"axios":10}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -245,6 +354,10 @@ var _main = require("../main.js");
 
 var Header = function Header(_ref) {
   var render = _ref.render;
+  var state = {
+    loggedIn: "",
+    render: render
+  };
   (0, _main.intent)("navigateLogin", function (e) {
     (0, _navigate.onNavigate)('/login');
   });
@@ -254,9 +367,20 @@ var Header = function Header(_ref) {
   (0, _main.intent)("navigateGame", function (e) {
     (0, _navigate.onNavigate)("/gametime");
   });
+  (0, _main.intent)("logout", function (e) {
+    if (state.loggedIn === true) {
+      localStorage.removeItem("token");
+      state.loggedIn = false;
+      state.render(representation());
+    } else {
+      state.loggedIn === false;
+      state.render(representation());
+    }
+  });
+  console.log(state.loggedIn);
 
   var representation = function representation() {
-    return "\n\t<div class=\"navCont\">\n\t\t<nav class=\"navbar\">\n\t\t\t<ul>\n\t\t\t\t<li class=\"navButton\" onclick=navigateHome()>Home</li>\n\t\t\t\t<li class=\"navButton\" onclick=navigateGame()>Play Game</li>\n\t\t\t\t<li class=\"navButton\">Account</li>\n\t\t\t\t<li class=\"navButton\" onclick=navigateLogin()>Login</li>\n\t\t\t</ul>\n\t\t</nav>\n\t</div>\n\t";
+    return "\n\t<div class=\"navCont\">\n\t\t<nav class=\"navbar\">\n\t\t\t<ul>\n\t\t\t\t<li class=\"navButton\" onclick=navigateHome()>Home</li>\n\t\t\t\t<li class=\"navButton\" onclick=navigateGame()>Play Game</li>\n\t\t\t\t<li class=\"navButton\">Account</li>\n\t\t\t\t".concat(state.loggedIn === true ? "<li class=\"navButton\" onclick=logout()>LogOut</li>" : "<li class=\"navButton\" onclick=navigateLogin()>Login</li>", "\n\t\t\t</ul>\n\t\t</nav>\n\t</div>\n\t");
   };
 
   return representation;
@@ -264,7 +388,7 @@ var Header = function Header(_ref) {
 
 exports.Header = Header;
 
-},{"../helpers/navigate.js":1,"../main.js":2}],7:[function(require,module,exports){
+},{"../helpers/navigate.js":2,"../main.js":3}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -274,9 +398,10 @@ exports.Home = void 0;
 
 var _main = require("../main.js");
 
+var _navigate = require("../helpers/navigate.js");
+
 var Home = function Home(_ref) {
   var render = _ref.render;
-
   // let state = {theNames: [], render}
   // const names = () => {
   // 	return getNames()
@@ -286,26 +411,31 @@ var Home = function Home(_ref) {
   // 		} )
   // }
   // names()
-  var representation = function representation() {
-    return "\n\t\t\t<div id=\"homeCont\">\n\t\t\tThis is the Home Page\n\t\t\t</div>\n\t";
-  };
+  (0, _main.intent)('navigateSignup', function (e) {
+    (0, _navigate.onNavigate)('/signup');
+  });
 
-  var namesList = function namesList(names) {
-    if (names != []) {
-      return "\n\t\t\t\t<ul>\n\t\t\t\t".concat(names.map(function (n) {
-        return "<li>".concat(n.name, "</li>");
-      }), "\n\t\t\t\t</ul>\n\t\t");
-    } else {
-      return "<div></div>";
-    }
-  };
+  var representation = function representation() {
+    return "\n\t\t\t<div id=\"homeCont\">\n\t\t\tThis is the Home Page\n\t\t\t<button onclick=navigateSignup()>Sign Up To Play Now!</button>\n\t\t\t</div>\n\t";
+  }; // let namesList = (names) => {
+  // 	if (names != []) {
+  // 		return `
+  // 			<ul>
+  // 			${names.map(n => `<li>${n.name}</li>`)}
+  // 			</ul>
+  // 	`
+  // 	} else {
+  // 		return `<div></div>`
+  // 	}
+  // } 
+
 
   return representation;
 };
 
 exports.Home = Home;
 
-},{"../main.js":2}],8:[function(require,module,exports){
+},{"../helpers/navigate.js":2,"../main.js":3}],9:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -1274,9 +1404,9 @@ function () {
 /******/ })["default"];
 });
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":11}],10:[function(require,module,exports){
+},{"./lib/axios":12}],11:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1452,7 +1582,7 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-},{"../core/createError":17,"./../core/settle":21,"./../helpers/buildURL":25,"./../helpers/cookies":27,"./../helpers/isURLSameOrigin":29,"./../helpers/parseHeaders":31,"./../utils":33}],11:[function(require,module,exports){
+},{"../core/createError":18,"./../core/settle":22,"./../helpers/buildURL":26,"./../helpers/cookies":28,"./../helpers/isURLSameOrigin":30,"./../helpers/parseHeaders":32,"./../utils":34}],12:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -1507,7 +1637,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":12,"./cancel/CancelToken":13,"./cancel/isCancel":14,"./core/Axios":15,"./core/mergeConfig":20,"./defaults":23,"./helpers/bind":24,"./helpers/spread":32,"./utils":33}],12:[function(require,module,exports){
+},{"./cancel/Cancel":13,"./cancel/CancelToken":14,"./cancel/isCancel":15,"./core/Axios":16,"./core/mergeConfig":21,"./defaults":24,"./helpers/bind":25,"./helpers/spread":33,"./utils":34}],13:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1528,7 +1658,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -1587,14 +1717,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":12}],14:[function(require,module,exports){
+},{"./Cancel":13}],15:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1682,7 +1812,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"../helpers/buildURL":25,"./../utils":33,"./InterceptorManager":16,"./dispatchRequest":18,"./mergeConfig":20}],16:[function(require,module,exports){
+},{"../helpers/buildURL":26,"./../utils":34,"./InterceptorManager":17,"./dispatchRequest":19,"./mergeConfig":21}],17:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1736,7 +1866,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":33}],17:[function(require,module,exports){
+},{"./../utils":34}],18:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -1756,7 +1886,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":19}],18:[function(require,module,exports){
+},{"./enhanceError":20}],19:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1844,7 +1974,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/isCancel":14,"../defaults":23,"./../helpers/combineURLs":26,"./../helpers/isAbsoluteURL":28,"./../utils":33,"./transformData":22}],19:[function(require,module,exports){
+},{"../cancel/isCancel":15,"../defaults":24,"./../helpers/combineURLs":27,"./../helpers/isAbsoluteURL":29,"./../utils":34,"./transformData":23}],20:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1888,7 +2018,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],20:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -1941,7 +2071,7 @@ module.exports = function mergeConfig(config1, config2) {
   return config;
 };
 
-},{"../utils":33}],21:[function(require,module,exports){
+},{"../utils":34}],22:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -1968,7 +2098,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":17}],22:[function(require,module,exports){
+},{"./createError":18}],23:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1990,7 +2120,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../utils":33}],23:[function(require,module,exports){
+},{"./../utils":34}],24:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -2092,7 +2222,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this,require('_process'))
-},{"./adapters/http":10,"./adapters/xhr":10,"./helpers/normalizeHeaderName":30,"./utils":33,"_process":35}],24:[function(require,module,exports){
+},{"./adapters/http":11,"./adapters/xhr":11,"./helpers/normalizeHeaderName":31,"./utils":34,"_process":36}],25:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -2105,7 +2235,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],25:[function(require,module,exports){
+},{}],26:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2178,7 +2308,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":33}],26:[function(require,module,exports){
+},{"./../utils":34}],27:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2194,7 +2324,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],27:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2249,7 +2379,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":33}],28:[function(require,module,exports){
+},{"./../utils":34}],29:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2265,7 +2395,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],29:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2335,7 +2465,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":33}],30:[function(require,module,exports){
+},{"./../utils":34}],31:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -2349,7 +2479,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":33}],31:[function(require,module,exports){
+},{"../utils":34}],32:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2404,7 +2534,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":33}],32:[function(require,module,exports){
+},{"./../utils":34}],33:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2433,7 +2563,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],33:[function(require,module,exports){
+},{}],34:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -2769,7 +2899,7 @@ module.exports = {
   trim: trim
 };
 
-},{"./helpers/bind":24,"is-buffer":34}],34:[function(require,module,exports){
+},{"./helpers/bind":25,"is-buffer":35}],35:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -2782,7 +2912,7 @@ module.exports = function isBuffer (obj) {
     typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
 }
 
-},{}],35:[function(require,module,exports){
+},{}],36:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -2968,4 +3098,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[2]);
+},{}]},{},[3]);

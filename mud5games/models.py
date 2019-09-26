@@ -1,19 +1,21 @@
 from django.db import models
-# from django.contrib.auth.models import User
+from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 import uuid
 
-class User(models.Model):
-    id=models.AutoField(primary_key=True)
-    User_Name=models.CharField(max_length=50)
-    Password=models.CharField(max_length=100)
-    Email=models.CharField(max_length=50, unique=True)
-    First_Name=models.CharField(max_length=50)
-    Last_Name=models.CharField(max_length=50)
-    # Token=models.CharField(max_length=100, null=True)
-    # Room=models.ManyToManyField('Rooms', blank=True)
-    # Item=models.ManyToManyField('Items', blank=True)
+# class User(models.Model):
+#     id=models.AutoField(primary_key=True)
+#     User_Name=models.CharField(max_length=50)
+#     Password=models.CharField(max_length=100)
+#     Email=models.CharField(max_length=50, unique=True)
+#     First_Name=models.CharField(max_length=50)
+#     Last_Name=models.CharField(max_length=50)
+#     # Token=models.CharField(max_length=100, null=True)
+#     # Room=models.ManyToManyField('Rooms', blank=True)
+#     # Item=models.ManyToManyField('Items', blank=True)
+#     def create(self):
+#         return self;
 
 class Player(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
@@ -69,11 +71,11 @@ class Items(models.Model):
         return self.Item_Name, self.Room
 
 
-@receiver(post_save, sender=User)
-def create_user_player(sender, instance, created, **kwargs):
-    if created:
-        Player.objects.create(user=instance)
-
-@receiver(post_save,sender=User)
-def save_user_player(sender, instance, **kwargs):
-    instance.player.save()
+# @receiver(post_save, sender=User)
+# def create_user(sender, instance, created, **kwargs):
+#     if created:
+#         Player.objects.create(the_user=instance)
+#
+# @receiver(post_save,sender=User)
+# def save_user_player(sender, instance, **kwargs):
+#     instance.player.save()

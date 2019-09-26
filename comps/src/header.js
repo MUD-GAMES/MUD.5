@@ -2,6 +2,7 @@ import {onNavigate} from '../helpers/navigate.js'
 import {intent} from '../main.js'
 
 export let Header = function({render}) {
+	let state = { loggedIn: "", render }
 
 	intent("navigateLogin", function(e) {
 		onNavigate('/login')
@@ -12,6 +13,17 @@ export let Header = function({render}) {
 	intent("navigateGame", function(e) {
 		onNavigate("/gametime")
 	})
+	intent("logout", function(e) {
+		if (state.loggedIn === true) {
+			localStorage.removeItem("token")
+			state.loggedIn = false
+			state.render(representation())
+		} else {
+			state.loggedIn === false
+			state.render(representation())
+		}
+	})
+	console.log(state.loggedIn)
 
 	let representation = () => `
 	<div class="navCont">
@@ -20,7 +32,11 @@ export let Header = function({render}) {
 				<li class="navButton" onclick=navigateHome()>Home</li>
 				<li class="navButton" onclick=navigateGame()>Play Game</li>
 				<li class="navButton">Account</li>
-				<li class="navButton" onclick=navigateLogin()>Login</li>
+				${state.loggedIn ===  true ? 
+					`<li class="navButton" onclick=logout()>LogOut</li>`
+						:
+						`<li class="navButton" onclick=navigateLogin()>Login</li>`
+				}
 			</ul>
 		</nav>
 	</div>

@@ -1,6 +1,6 @@
 import SPARouter from "@kodnificent/sparouter"
 import {Header} from './src/header.js'
-import {Form} from './src/form.js'
+import {SignUpForm, LogInForm} from './src/form.js'
 import {Blank} from './src/blank.js'
 import {Home} from './src/homePage.js'
 import {GamePage} from './src/gamePage.js'
@@ -11,7 +11,6 @@ const options = {historyMode : true}
 const router = new SPARouter(options)
 
 let render = function (component, initState = {}, mountNode = 'app') {
-	console.log("ran")
   initState.render = function( stateRepresentation/* , options = {} */ ) {
     (document.getElementById(mountNode) || {}).innerHTML = stateRepresentation
   }
@@ -40,40 +39,32 @@ export let listItems = function(className) {
 	return document.getElementsByClassName(className)
 }
 
-export const getNames = () => {
-	// return axios.get('https://djangoboiler.herokuapp.com/players')
-	return axios.get('http://127.0.0.1:8000/players')
-		.then(res => {
-			console.log(res.data)
-			return res.data
-		})
-		.catch(err => {
-			console.log(err)
-		})
-}
-
-export const createNewUser = (user) => {
-	console.log(user)
-	return axios
-		.post('http://127.0.0.1:8000/api/auth/register/', user)
-		.then(res => {
-			return (res.data)
-		})
-		.catch(err => {
-			console.log(err)
-		})
-}
-
-
+// export const getNames = () => {
+// 	// return axios.get('https://djangoboiler.herokuapp.com/players')
+// 	return axios.get('http://127.0.0.1:8000/players')
+// 		.then(res => {
+// 			console.log(res.data)
+// 			return res.data
+// 		})
+// 		.catch(err => {
+// 			console.log(err)
+// 		})
+// }
+//
 
 router.get('/', function(req, res) {
 	render(Header)
 	render(Home, {},'main')
 })
 
+router.get('/signup', function(req, res) {
+	render(Header)
+	render(SignUpForm, {},'main')
+})
+
 router.get('/login', function(req, res) {
 	render(Header)
-	render(Form, {},'main')
+	render(LogInForm, {}, 'main')
 })
 
 router.get('/gametime', function(req,res){

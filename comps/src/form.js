@@ -1,16 +1,19 @@
 import { intent } from '../main.js'
 import {value} from '../main.js'
-import {createNewUser} from '../main.js'
+import {createNewUser, logInUser} from '../helpers/loginHelper.js'
+import {onNavigate} from '../helpers/navigate.js'
+import axios from 'axios'
 
-export let Form = function({render}) {
-	let state = { User_Name: "", Email: "", Password: "" }
+export let SignUpForm = function({render}) {
+	let state = { username: "", password: "", email: "" }
 
 	intent("capInput", function(e) {
-		state.User_Name = value("username")
-		state.Email = value("email")
-		state.Password = value("password")
+		state.username = value("username")
+		state.email = value("email")
+		state.password = value("password")
 		// state.render(representation())
-		createNewUser(state)
+		createNewUser(axios, state)
+		console.log(state)
 		return false
 	})
 
@@ -18,7 +21,7 @@ export let Form = function({render}) {
 
 	let representation = () => `
 	<div class="formCont">
-		<h3>Register</h3>
+		<h3>Sign UP</h3>
 		<div class="form">
 			<div class="userNameCont">
 				<label class="regLab" for="username">Username</label>
@@ -32,7 +35,42 @@ export let Form = function({render}) {
 				<label class="reg" for="pass">Password</label>
 				<input id="password" type="password">
 			</div>
-			<button class="submit" onclick=capInput()>Test</button>
+			<button class="submit" onclick=capInput()>SignUP</button>
+		</div>
+	</div>
+	`
+
+	return representation
+
+}
+
+export let LogInForm = function({render}) {
+	let state = { username: "", password: ""}
+
+	intent("capInput", function(e) {
+		state.username = value("username")
+		state.password = value("password")
+		// state.render(representation())
+		logInUser(axios, onNavigate, state)
+		return false
+	})
+
+
+	
+
+	let representation = () => `
+	<div class="formCont">
+		<h3>Log In</h3>
+		<div class="form">
+			<div class="userNameCont">
+				<label class="regLab" for="username">Username</label>
+				<input id="username" type="text" >
+			</div>
+			<div class="passwordCont">
+				<label class="reg" for="pass">Password</label>
+				<input id="password" type="password">
+			</div>
+			<button class="submit" onclick=capInput()>Login</button>
 		</div>
 	</div>
 	`
