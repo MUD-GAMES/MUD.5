@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'mud5games',
     'rest_framework',
     'knox',
+    'corsheaders'
 ]
 
 REST_FRAMEWORK = {
