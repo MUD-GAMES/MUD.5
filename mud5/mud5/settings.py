@@ -1,6 +1,5 @@
 """
 Django settings for mud5 project.
-
 """
 
 import os
@@ -10,7 +9,7 @@ import django_heroku
 
 
 env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts.apps.AccountsConfig',
+    'rest_framework',
     'mud5games',
+    
 ]
 
 MIDDLEWARE = [
