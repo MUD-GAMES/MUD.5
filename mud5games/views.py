@@ -10,6 +10,8 @@ from knox.models import AuthToken
 from mud5games.models import User
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.dispatch import receiver
+from django.db.models.signals import post_save
 
 # Create your views here.
 
@@ -38,9 +40,10 @@ class UserSerializer(serializers.ModelSerializer):
 # =======================================================
 # =======================================================
 
-class RegistrationAPI(generics.ListCreateAPIView):
+class RegistrationAPI(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
 
+    @receiver(post_save, sender=User)
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
