@@ -36,8 +36,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mud5games',
     'rest_framework',
+    'mud5games',
+    
 ]
 
 MIDDLEWARE = [
