@@ -18,17 +18,14 @@ var loadUser = function loadUser(axios) {
   var headers = {
     "Content-Type": "application/json"
   };
-
-  if (token) {
-    headers["Authorization"] = "Token ".concat(token);
-    return axios.get('http://127.0.0.1:8000/api/auth/user/', {
-      headers: headers
-    }).then(function (res) {
-      return res.data;
-    })["catch"](function (err) {
-      console.log(err);
-    });
-  }
+  headers["Authorization"] = "Token ".concat(token);
+  return axios.get('http://127.0.0.1:8000/api/auth/user/', {
+    headers: headers
+  }).then(function (res) {
+    return res.data;
+  })["catch"](function (err) {
+    console.log(err);
+  });
 };
 
 exports.loadUser = loadUser;
@@ -293,8 +290,13 @@ var GamePage = function GamePage(_ref) {
       if (res.username) {
         state.loggedIn = true;
         state.render(representation());
+        console.log(res.data);
+        return false;
       }
+    })["catch"](function (err) {
+      console.log(err);
     });
+    return false;
   };
 
   theLogIn(_axios["default"]);
@@ -328,11 +330,7 @@ var GamePage = function GamePage(_ref) {
   });
 
   var representation = function representation() {
-    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div class=\"gameViewCont\">\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\t\tPickup Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\t\tDrop Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" onclick=movementNorth()>N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" onclick=movementEast()>E</div>\n\t\t\t\t\t\t\t<div id=\"west\" onclick=movementWest()>W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" onclick=movementSouth()>S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>" : "".concat(notLoggedIn()), "\n\t");
-  };
-
-  var notLoggedIn = function notLoggedIn() {
-    return "<div class=\"not\">Please log in to Play</div>";
+    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div class=\"gameViewCont\">\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\t\tPickup Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\t\tDrop Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" onclick=movementNorth()>N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" onclick=movementEast()>E</div>\n\t\t\t\t\t\t\t<div id=\"west\" onclick=movementWest()>W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" onclick=movementSouth()>S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\t" : "<div class=\"loginplease\">Log In To Play</div>", "\n\t");
   };
 
   return representation;

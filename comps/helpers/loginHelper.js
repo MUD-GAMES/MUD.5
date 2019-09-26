@@ -7,7 +7,6 @@ export let loadUser = (axios) => {
 	let headers = {
 		"Content-Type": "application/json"
 	};
-	if (token) {
 		headers["Authorization"] = `Token ${token}`
 		return axios
 			.get('http://127.0.0.1:8000/api/auth/user/', {headers, })
@@ -17,7 +16,6 @@ export let loadUser = (axios) => {
 			.catch(err => {
 				console.log(err)
 			})
-	}
 
 }
 

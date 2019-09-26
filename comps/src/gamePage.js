@@ -12,7 +12,12 @@ export let GamePage = function({render}) {
 				if (res.username) {
 					state.loggedIn = true
 					state.render(representation())
+					console.log(res.data)
+					return false
 				}
+			})
+			.catch(err => {
+				console.log(err)
 			})
 	}
 
@@ -53,59 +58,62 @@ export let GamePage = function({render}) {
 
 
 	let representation = () => `
-	<div class="gamePageCont">
-		<div class="gameViewCont">
-		</div>
-		<div class="sideViewCont">
-			<div class="roomInfo">
-				<div class="descCont">
-					<p class="room">Test Room</p>
-					<p class="desc">This is the room info</p>
-				</div>
-				<div class="itemList">
-					<ul>
-						<li><input  class="items" id="1" type="radio", name="item" value="item1">item 1</li>
-						<li><input  class="items" id="2" type="radio", name="item" value="item2">item 2</li>
-						<li><input  class="items" id="3" type="radio", name="item" value=item3>item 3</li>
-					</ul>
-				<div class="itemControls">
-					<div class="pickup" onclick=pickUpItem()>
-						Pickup Item
-					</div>
-					<div class="drop">
-						Drop Item
-					</div>
-				</div>
-				</div>
+	${state.loggedIn === true ? `
+		<div class="gamePageCont">
+			<div class="gameViewCont">
 			</div>
-			<div class="playerInfo">
-				<div class="gInfo">
-					<div class="name">
-						badCompany55
+			<div class="sideViewCont">
+				<div class="roomInfo">
+					<div class="descCont">
+						<p class="room">Test Room</p>
+						<p class="desc">This is the room info</p>
+					</div>
+					<div class="itemList">
+						<ul>
+							<li><input  class="items" id="1" type="radio", name="item" value="item1">item 1</li>
+							<li><input  class="items" id="2" type="radio", name="item" value="item2">item 2</li>
+							<li><input  class="items" id="3" type="radio", name="item" value=item3>item 3</li>
+						</ul>
+					<div class="itemControls">
+						<div class="pickup" onclick=pickUpItem()>
+							Pickup Item
+						</div>
+						<div class="drop">
+							Drop Item
+						</div>
+					</div>
 					</div>
 				</div>
-				<div class="item">
-					<ul>
-						<li>item 1</li>
-					</ul>
+				<div class="playerInfo">
+					<div class="gInfo">
+						<div class="name">
+							badCompany55
+						</div>
+					</div>
+					<div class="item">
+						<ul>
+							<li>item 1</li>
+						</ul>
+					</div>
 				</div>
-			</div>
-			<div class="controls">
-				<div class="directions">
-					<div class="dir">
-						<div id="north" onclick=movementNorth()>N</div>
-					</div>
-					<div class="dir">
-						<div id="east" onclick=movementEast()>E</div>
-						<div id="west" onclick=movementWest()>W</div>
-					</div>
+				<div class="controls">
 					<div class="directions">
-						<div id="south" onclick=movementSouth()>S</div>
+						<div class="dir">
+							<div id="north" onclick=movementNorth()>N</div>
+						</div>
+						<div class="dir">
+							<div id="east" onclick=movementEast()>E</div>
+							<div id="west" onclick=movementWest()>W</div>
+						</div>
+						<div class="directions">
+							<div id="south" onclick=movementSouth()>S</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
-
+			`: `<div class="loginplease">Log In To Play</div>`
+		}
 	`
+		return representation
 }
