@@ -10,7 +10,7 @@ export let loadUser = (axios) => {
 		headers["Authorization"] = `Token ${token}`
 		return axios
 			// .get('http://127.0.0.1:8000/api/auth/user/', {headers, })
-			.get('https://zachstestbuilddjango.herokuapp.com/api/auth/user/', user)
+			.get('https://zachstestbuilddjango.herokuapp.com/api/auth/user/', {headers, })
 			.then(res => {
 				return res.data
 			})

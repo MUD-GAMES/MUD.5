@@ -10,6 +10,7 @@ from knox.models import AuthToken
 from mud5games.models import User
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.views.decorators.http import require_http_methods
 
 # Create your views here.
 
@@ -41,6 +42,7 @@ class UserSerializer(serializers.ModelSerializer):
 class RegistrationAPI(generics.GenericAPIView):
     serializer_class = CreateUserSerializer
 
+    @require_http_methods(["GET", "POST"])
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -67,6 +69,7 @@ class LoginUserSerializer(serializers.Serializer):
 class LoginApi(generics.GenericAPIView):
     serializer_class = LoginUserSerializer
 
+    @require_http_methods(["GET", "POST"])
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
