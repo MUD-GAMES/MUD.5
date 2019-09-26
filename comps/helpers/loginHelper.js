@@ -9,7 +9,8 @@ export let loadUser = (axios) => {
 	};
 		headers["Authorization"] = `Token ${token}`
 		return axios
-			.get('http://127.0.0.1:8000/api/auth/user/', {headers, })
+			// .get('http://127.0.0.1:8000/api/auth/user/', {headers, })
+			.get('https://zachstestbuilddjango.herokuapp.com/api/auth/user/', user)
 			.then(res => {
 				return res.data
 			})
@@ -23,7 +24,8 @@ export let loadUser = (axios) => {
 export const createNewUser = (axios, user) => {
 	console.log(user)
 	return axios
-		.post('http://127.0.0.1:8000/api/auth/register/', user)
+		// .post('http://127.0.0.1:8000/api/auth/register/', user)
+		.post('https://zachstestbuilddjango.herokuapp.com/api/auth/registerer/', user)
 		.then(res => {
 			console.log(res.data)
 			return (res.data)
@@ -36,7 +38,8 @@ export const createNewUser = (axios, user) => {
 export const logInUser = (axios, redirect, user) => {
 	console.log(user)
 	return axios
-		.post('http://127.0.0.1:8000/api/auth/login/', user)
+		.post('https://zachstestbuilddjango.herokuapp.com/api/auth/login/', user)
+		// .post('http://127.0.0.1:8000/api/auth/login/', user)
 		.then(res => {
 			window.localStorage.setItem("token", res.data.token)
 			window.localStorage.setItem("username", res.data.user.username)
