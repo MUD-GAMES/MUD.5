@@ -19,7 +19,8 @@ var loadUser = function loadUser(axios) {
     "Content-Type": "application/json"
   };
   headers["Authorization"] = "Token ".concat(token);
-  return axios.get('http://127.0.0.1:8000/api/auth/user/', {
+  return axios // .get('http://127.0.0.1:8000/api/auth/user/', {headers, })
+  .get('https://zachstestbuilddjango.herokuapp.com/api/auth/user/', {
     headers: headers
   }).then(function (res) {
     return res.data;
@@ -32,7 +33,9 @@ exports.loadUser = loadUser;
 
 var createNewUser = function createNewUser(axios, user) {
   console.log(user);
-  return axios.post('http://127.0.0.1:8000/api/auth/register/', user).then(function (res) {
+  return axios // .post('http://127.0.0.1:8000/api/auth/register/', user)
+  .post('https://zachstestbuilddjango.herokuapp.com/api/auth/registerer/', user) // .post('http://localhost:8000/api/auth/register/', user)
+  .then(function (res) {
     console.log(res.data);
     return res.data;
   })["catch"](function (err) {
@@ -44,7 +47,8 @@ exports.createNewUser = createNewUser;
 
 var logInUser = function logInUser(axios, redirect, user) {
   console.log(user);
-  return axios.post('http://127.0.0.1:8000/api/auth/login/', user).then(function (res) {
+  return axios.post('https://zachstestbuilddjango.herokuapp.com/api/auth/login/', user) // .post('http://127.0.0.1:8000/api/auth/login/', user)
+  .then(function (res) {
     window.localStorage.setItem("token", res.data.token);
     window.localStorage.setItem("username", res.data.user.username);
     window.localStorage.setItem("id", res.data.user.id);
@@ -296,7 +300,6 @@ var GamePage = function GamePage(_ref) {
     })["catch"](function (err) {
       console.log(err);
     });
-    return false;
   };
 
   theLogIn(_axios["default"]);

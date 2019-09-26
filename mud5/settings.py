@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 import django_heroku
+import dj_database_url
 
 
 env_path = Path('.') / '.env'
@@ -96,18 +97,23 @@ WSGI_APPLICATION = 'mud5.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE':'django.db.backends.postgresql',
-        'NAME':'mud5',
-        'USER': 'zac',
-        'PASSWORD': 'default',
-         'HOST': 'localhost',
-         'PORT':'5432' 
-        
-    },
-     
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE':'django.db.backends.postgresql',
+#         'NAME':'mud5',
+#         'USER': 'zac',
+#         'PASSWORD': 'default',
+#          'HOST': 'localhost',
+#          'PORT':'5432' 
+#         
+#     },
+#      
+# }
+
+DATABASES = {}
+DATABASES['default'] = dj_database_url.config(default='postgres://nkhgarbamwaqnh:88e2fc8e940ededf83f878f3e39319f0b87789f686323c1d57e671e877ff6d2a@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d2qpgtac528fr6')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 # Password validation
@@ -157,4 +163,4 @@ STATICFILES_DIRS = [
 
 django_heroku.settings(locals())
 LOGIN_REDIRECT_URL = '/'
-
+# del DATABASES['default']['OPTIONS']['sslmode']

@@ -25,7 +25,8 @@ export const createNewUser = (axios, user) => {
 	console.log(user)
 	return axios
 		// .post('http://127.0.0.1:8000/api/auth/register/', user)
-		.post('https://zachstestbuilddjango.herokuapp.com/api/auth/registerer/', user)
+		.post('https://zachstestbuilddjango.herokuapp.com/api/auth/register/', user)
+		// .post('http://localhost:8000/api/auth/register/', user)
 		.then(res => {
 			console.log(res.data)
 			return (res.data)
