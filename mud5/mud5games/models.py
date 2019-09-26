@@ -10,6 +10,9 @@ class User(models.Model):
     Room=models.ManyToManyField('Rooms', blank=True)
     Item=models.ManyToManyField('Items', blank=True)
 
+    def __str__(self):
+        return self.User_Name, self.Room, self.Item
+
 class Rooms(models.Model):
     Room_Name=models.CharField(max_length=50)
     Item=models.ManyToManyField('Items', blank=True)
