@@ -4,14 +4,16 @@ Django settings for mud5 project.
 """
 
 import os
-from dotenv import load_dotenv
 from pathlib import Path
 import django_heroku
 import dj_database_url
 
 
 env_path = Path('.') / '.env'
-load_dotenv(dotenv_path=env_path)
+
+
+env_path = Path('.') / '.env'
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -38,8 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mud5games',
     'rest_framework',
+    'mud5games',
     'knox',
     'corsheaders'
 ]
@@ -111,7 +113,8 @@ WSGI_APPLICATION = 'mud5.wsgi.application'
 # }
 
 DATABASES = {}
-DATABASES['default'] = dj_database_url.config(default='postgres://nkhgarbamwaqnh:88e2fc8e940ededf83f878f3e39319f0b87789f686323c1d57e671e877ff6d2a@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d2qpgtac528fr6')
+# DATABASES['default'] = dj_database_url.config(default='postgres://nkhgarbamwaqnh:88e2fc8e940ededf83f878f3e39319f0b87789f686323c1d57e671e877ff6d2a@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d2qpgtac528fr6')
+DATABASES['default'] = dj_database_url.config(default='postgres://ltryovvajgsgeb:4d79bd508c329c669f0abe7ed47c69ac71a1c9cdbe9faec7b9d4b67eba4f97ad@ec2-107-21-102-221.compute-1.amazonaws.com:5432/d585q7rs605nog')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
