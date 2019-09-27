@@ -10,7 +10,7 @@ export let loadUser = (axios) => {
 		headers["Authorization"] = `Token ${token}`
 		return axios
 			// .get('http://127.0.0.1:8000/api/auth/user/', {headers, })
-			.get('https://mud5games.herokuapp.com//api/auth/user/', user)
+			.get('https://mud5games.herokuapp.com/api/auth/user/', user)
 			.then(res => {
 				return res.data
 			})
@@ -26,7 +26,7 @@ export const createNewUser = (axios, user) => {
 	return axios
 		// .post('http://127.0.0.1:8000/api/auth/register/', user)
 		// .post('https://zachstestbuilddjango.herokuapp.com/api/auth/register/', user)
-		.post('https://mud5games.herokuapp.com//api/auth/register/', user)
+		.post('https://mud5games.herokuapp.com/api/auth/register/', user)
 		// .post('http://localhost:8000/api/auth/register/', user)
 		.then(res => {
 			console.log(res.data)
@@ -41,7 +41,7 @@ export const logInUser = (axios, redirect, user) => {
 	console.log(user)
 	return axios
 		// .post('https://zachstestbuilddjango.herokuapp.com/api/auth/login/', user)
-		.post('https://mud5games.herokuapp.com//api/auth/login/', user)
+		.post('https://mud5games.herokuapp.com/api/auth/login/', user)
 		// .post('http://127.0.0.1:8000/api/auth/login/', user)
 		.then(res => {
 			window.localStorage.setItem("token", res.data.token)
