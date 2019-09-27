@@ -20,9 +20,7 @@ var loadUser = function loadUser(axios) {
   };
   headers["Authorization"] = "Token ".concat(token);
   return axios // .get('http://127.0.0.1:8000/api/auth/user/', {headers, })
-  .get('https://zachstestbuilddjango.herokuapp.com/api/auth/user/', {
-    headers: headers
-  }).then(function (res) {
+  .get('https://mud5games.herokuapp.com//api/auth/user/', user).then(function (res) {
     return res.data;
   })["catch"](function (err) {
     console.log(err);
@@ -34,8 +32,9 @@ exports.loadUser = loadUser;
 var createNewUser = function createNewUser(axios, user) {
   console.log(user);
   return axios // .post('http://127.0.0.1:8000/api/auth/register/', user)
-  .post('https://zachstestbuilddjango.herokuapp.com/api/auth/registerer/', user) // .post('http://localhost:8000/api/auth/register/', user)
-  .then(function (res) {
+  // .post('https://zachstestbuilddjango.herokuapp.com/api/auth/register/', user)
+  // .post('https://mud5games.herokuapp.com//api/auth/register/', user)
+  .post('http://localhost:8000/api/auth/register/', user).then(function (res) {
     console.log(res.data);
     return res.data;
   })["catch"](function (err) {
@@ -47,7 +46,8 @@ exports.createNewUser = createNewUser;
 
 var logInUser = function logInUser(axios, redirect, user) {
   console.log(user);
-  return axios.post('https://zachstestbuilddjango.herokuapp.com/api/auth/login/', user) // .post('http://127.0.0.1:8000/api/auth/login/', user)
+  return axios // .post('https://zachstestbuilddjango.herokuapp.com/api/auth/login/', user)
+  .post('https://mud5games.herokuapp.com//api/auth/login/', user) // .post('http://127.0.0.1:8000/api/auth/login/', user)
   .then(function (res) {
     window.localStorage.setItem("token", res.data.token);
     window.localStorage.setItem("username", res.data.user.username);
