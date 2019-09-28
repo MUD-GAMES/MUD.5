@@ -8,19 +8,24 @@ exports.logInUser = exports.createNewUser = exports.loadUser = exports.userData 
 
 var _axios = _interopRequireDefault(require("axios"));
 
+var _navigate = require("./navigate.js");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
 var userData;
 exports.userData = userData;
 
-var loadUser = function loadUser(axios) {
+var loadUser = function loadUser() {
   var token = localStorage.getItem('token');
   var headers = {
     "Content-Type": "application/json"
   };
   headers["Authorization"] = "Token ".concat(token);
-  return axios // .get('http://127.0.0.1:8000/api/auth/user/', {headers, })
-  .get('https://mud5games.herokuapp.com//api/auth/user/', user).then(function (res) {
+  return _axios["default"].get('http://127.0.0.1:8000/api/auth/user/', {
+    headers: headers
+  }) // .get('https://mud5games.herokuapp.com/api/auth/user/', {headers, })
+  .then(function (res) {
+    console.log(res.data);
     return res.data;
   })["catch"](function (err) {
     console.log(err);
@@ -29,16 +34,45 @@ var loadUser = function loadUser(axios) {
 
 exports.loadUser = loadUser;
 
+var loginNav = function loginNav() {
+  (0, _navigate.onNavigate)('/login');
+};
+
+var flashMessage = function flashMessage() {
+  var wait = setTimeout(loginNav, 900);
+};
+
 var createNewUser = function createNewUser(axios, user) {
   console.log(user);
-  return axios // .post('http://127.0.0.1:8000/api/auth/register/', user)
-  // .post('https://zachstestbuilddjango.herokuapp.com/api/auth/register/', user)
-  // .post('https://mud5games.herokuapp.com//api/auth/register/', user)
-  .post('http://localhost:8000/api/auth/register/', user).then(function (res) {
-    console.log(res.data);
-    return res.data;
+  return axios.post('http://127.0.0.1:8000/api/auth/register/', user) // .post('https://zachstestbuilddjango.herokuapp.com/api/auth/register/', user)
+  // .post('https://mud5games.herokuapp.com/api/auth/register/', user)
+  .then(function (res) {
+    var message = document.getElementById('successMessage');
+
+    if (res.status === 200) {
+      message.innerHTML = "New User Created Successfully";
+      flashMessage();
+    } else {
+      message.innerHTML = "There was a problem creating the User";
+    }
   })["catch"](function (err) {
-    console.log(err.response);
+    var message = document.getElementById('failureMessage');
+
+    if (!user.username || !user.email || !user.password) {
+      message.innerHTML = "USERNAME, EMAIL, PASSWORD are required";
+    } else if (err.toJSON().message === "Request failed with status code 400") {
+      var usernameMess = document.createElement("DIV");
+      var emailMess = document.createElement("DIV");
+      var space = document.createElement("DIV");
+      usernameMess.innerHTML = "The username is already taken";
+      emailMess.innerHTML = "Please enter a valid email";
+      space.style.height = '1rem';
+      message.appendChild(usernameMess);
+      message.appendChild(emailMess);
+      message.appendChild(space);
+    } else {
+      message.innerHTML = "There was an internal error when creating the user";
+    }
   });
 };
 
@@ -47,8 +81,8 @@ exports.createNewUser = createNewUser;
 var logInUser = function logInUser(axios, redirect, user) {
   console.log(user);
   return axios // .post('https://zachstestbuilddjango.herokuapp.com/api/auth/login/', user)
-  .post('https://mud5games.herokuapp.com//api/auth/login/', user) // .post('http://127.0.0.1:8000/api/auth/login/', user)
-  .then(function (res) {
+  // .post('https://mud5games.herokuapp.com/api/auth/login/', user)
+  .post('http://127.0.0.1:8000/api/auth/login/', user).then(function (res) {
     window.localStorage.setItem("token", res.data.token);
     window.localStorage.setItem("username", res.data.user.username);
     window.localStorage.setItem("id", res.data.user.id);
@@ -62,7 +96,211 @@ var logInUser = function logInUser(axios, redirect, user) {
 
 exports.logInUser = logInUser;
 
-},{"axios":10}],2:[function(require,module,exports){
+},{"./navigate.js":3,"axios":11}],2:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.newMap = void 0;
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
+var newMap = function newMap() {
+  console.log('newMap');
+  var ctx = null;
+  var gameMap = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0];
+  console.log(gameMap);
+  var tileW = 40,
+      tileH = 40;
+  var mapW = 10,
+      mapH = 10;
+  var currentSecond = 0,
+      frameCount = 0,
+      framesLastSecond = 0,
+      lastFrameTime = 0;
+  var keysDown = {
+    37: false,
+    38: false,
+    39: false,
+    40: false
+  };
+
+  var Character =
+  /*#__PURE__*/
+  function () {
+    function Character(props) {
+      _classCallCheck(this, Character);
+
+      this.tileFrom = props.tileFrom;
+      this.tileTo = props.tileTo;
+      this.timeMoved = props.timeMoved;
+      this.dimensions = props.dimensions;
+      this.position = props.position;
+      this.delayMove = props.delayMove;
+    }
+
+    _createClass(Character, [{
+      key: "placeAt",
+      value: function placeAt(x, y) {
+        this.tileFrom = [x, y];
+        this.tileTo = [x, y];
+        this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+      }
+    }, {
+      key: "processMovement",
+      value: function processMovement(t) {
+        if (this.tileFrom[0] == this.tileTo[0] && this.tileFrom[1] == this.tileTo[1]) {
+          return false;
+        }
+
+        if (t - this.timeMoved >= this.delayMove) {
+          this.placeAt(this.tileTo[0], this.tileTo[1]);
+        } else {
+          this.position[0] = this.tileFrom[0] * tileW + (tileW - this.dimensions[0]) / 2;
+          this.position[1] = this.tileFrom[1] * tileH + (tileH - this.dimensions[1]) / 2;
+
+          if (this.tileTo[0] != this.tileFrom[0]) {
+            var diff = tileW / this.delayMove * (t - this.timeMoved);
+            this.position[0] += this.tileTo[0] < this.tileFrom[0] ? 0 - diff : diff;
+          }
+
+          if (this.tileTo[1] != this.tileFrom[1]) {
+            var _diff = tileH / this.delayMove * (t - this.timeMoved);
+
+            this.position[1] += this.tileTo[1] < this.tileFrom[1] ? 0 - _diff : _diff;
+          }
+
+          this.position[0] = Math.round(this.position[0]);
+          this.position[1] = Math.round(this.position[1]);
+        }
+
+        return true;
+      }
+    }]);
+
+    return Character;
+  }();
+
+  var player = new Character({
+    tileFrom: [1, 1],
+    tileTo: [1, 1],
+    timeMoved: 0,
+    dimensions: [30, 30],
+    position: [45, 45],
+    delayMove: 700
+  });
+
+  var toIndex = function toIndex(x, y) {
+    return y * mapW + x;
+  };
+
+  ctx = document.getElementById('game').getContext("2d");
+  requestAnimationFrame(function () {
+    drawGame();
+  });
+  ctx.font = "bold 10pt sans-serif";
+  var north = document.getElementById("north");
+  var south = document.getElementById("south");
+  var east = document.getElementById("east");
+  var west = document.getElementById("west");
+  var nmove = false;
+  var smove = false;
+  var emove = false;
+  var wmove = false;
+  north.addEventListener("mousedown", function (e) {
+    nmove = true;
+  });
+  south.addEventListener("mousedown", function (e) {
+    smove = true;
+  });
+  east.addEventListener("mousedown", function (e) {
+    emove = true;
+  });
+  west.addEventListener("mousedown", function (e) {
+    wmove = true;
+  });
+  north.addEventListener("mouseup", function (e) {
+    nmove = false;
+  });
+  south.addEventListener("mouseup", function (e) {
+    smove = false;
+  });
+  east.addEventListener("mouseup", function (e) {
+    emove = false;
+  });
+  west.addEventListener("mouseup", function (e) {
+    wmove = false;
+  });
+
+  var drawGame = function drawGame() {
+    console.log('drawGame');
+
+    if (ctx == null) {
+      return;
+    }
+
+    var currentFrameTime = Date.now();
+    var timeElapsed = currentFrameTime - lastFrameTime;
+    var sec = Math.floor(Date.now() / 1000);
+
+    if (sec != currentSecond) {
+      currentSecond = sec;
+      framesLastSecond = frameCount;
+      frameCount = 1;
+    } else {
+      frameCount++;
+    }
+
+    if (!player.processMovement(currentFrameTime)) {
+      if (nmove && player.tileFrom[1] > 0 && gameMap[toIndex(player.tileFrom[0], player.tileFrom[1] - 1)] == 1) {
+        player.tileTo[1] -= 1;
+      } else if (smove && player.tileFrom[1] < mapH - 1 && gameMap[toIndex(player.tileFrom[0], player.tileFrom[1] + 1)] == 1) {
+        player.tileTo[1] += 1;
+      } else if (emove && player.tileFrom[0] > 0 && gameMap[toIndex(player.tileFrom[0] - 1, player.tileFrom[1])] == 1) {
+        player.tileTo[0] -= 1;
+      } else if (wmove && player.tileFrom[0] < mapW - 1 && gameMap[toIndex(player.tileFrom[0] + 1, player.tileFrom[1])] == 1) {
+        player.tileTo[0] += 1;
+      }
+
+      if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
+        player.timeMoved = currentFrameTime;
+      }
+    }
+
+    for (var y = 0; y < mapH; ++y) {
+      for (var x = 0; x < mapW; ++x) {
+        switch (gameMap[y * mapW + x]) {
+          case 0:
+            ctx.fillStyle = "#685b48";
+            break;
+
+          default:
+            ctx.fillStyle = "#5aa457";
+        }
+
+        ctx.fillRect(x * tileW, y * tileH, tileW, tileH);
+      }
+    }
+
+    ctx.fillStyle = "#0000ff";
+    ctx.fillRect(player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
+    ctx.fillStyle = "#ff0000";
+    ctx.fillText("FPS: " + framesLastSecond, 10, 20);
+    lastFrameTime = currentFrameTime;
+    requestAnimationFrame(function () {
+      drawGame();
+    });
+  };
+};
+
+exports.newMap = newMap;
+
+},{}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -80,7 +318,7 @@ var onNavigate = function onNavigate(path) {
 
 exports.onNavigate = onNavigate;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -180,7 +418,7 @@ router.get('/gametime', function (req, res) {
 
 router.init();
 
-},{"./src/blank.js":4,"./src/form.js":5,"./src/gamePage.js":6,"./src/header.js":7,"./src/homePage.js":8,"@kodnificent/sparouter":9,"axios":10}],4:[function(require,module,exports){
+},{"./src/blank.js":5,"./src/form.js":6,"./src/gamePage.js":7,"./src/header.js":8,"./src/homePage.js":9,"@kodnificent/sparouter":10,"axios":11}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -196,7 +434,7 @@ var Blank = function Blank(_ref) {
 
 exports.Blank = Blank;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -216,11 +454,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "d
 
 var SignUpForm = function SignUpForm(_ref) {
   var render = _ref.render;
-  var state = {
-    username: "",
-    password: "",
-    email: ""
-  };
+  var state = {};
   (0, _main.intent)("capInput", function (e) {
     state.username = (0, _main.value)("username");
     state.email = (0, _main.value)("email");
@@ -232,7 +466,7 @@ var SignUpForm = function SignUpForm(_ref) {
   });
 
   var representation = function representation() {
-    return "\n\t<div class=\"formCont\">\n\t\t<h3>Sign UP</h3>\n\t\t<div class=\"form\">\n\t\t\t<div class=\"userNameCont\">\n\t\t\t\t<label class=\"regLab\" for=\"username\">Username</label>\n\t\t\t\t<input id=\"username\" type=\"text\" >\n\t\t\t</div>\n\t\t\t<div class=\"emailCont\">\n\t\t\t\t<label class=\"regLab\" for=\"email\">Email</label>\n\t\t\t\t<input id=\"email\" type=\"email\">\n\t\t\t</div>\n\t\t\t<div class=\"passwordCont\">\n\t\t\t\t<label class=\"reg\" for=\"pass\">Password</label>\n\t\t\t\t<input id=\"password\" type=\"password\">\n\t\t\t</div>\n\t\t\t<button class=\"submit\" onclick=capInput()>SignUP</button>\n\t\t</div>\n\t</div>\n\t";
+    return "\n\t<div class=\"formCont\">\n\t\t<h3>Sign UP</h3>\n\t\t<div class=\"form\">\n\t\t\t<div class=\"userNameCont\">\n\t\t\t\t<label class=\"regLab\" for=\"username\" required>Username</label>\n\t\t\t\t<input id=\"username\" type=\"text\" >\n\t\t\t</div>\n\t\t\t<div class=\"emailCont\">\n\t\t\t\t<label class=\"regLab\" for=\"email\" required>Email</label>\n\t\t\t\t<input id=\"email\" type=\"email\">\n\t\t\t</div>\n\t\t\t<div class=\"passwordCont\">\n\t\t\t\t<label class=\"reg\" for=\"pass\"required>Password</label>\n\t\t\t\t<input id=\"password\" type=\"password\">\n\t\t\t</div>\n\t\t\t<button class=\"submit\" onclick=capInput()>SignUP</button>\n\t\t\t<div id=\"successMessage\"></div>\n\t\t\t<div id=\"failureMessage\"></div>\n\t\t</div>\n\t</div>\n\t";
   };
 
   return representation;
@@ -263,7 +497,7 @@ var LogInForm = function LogInForm(_ref2) {
 
 exports.LogInForm = LogInForm;
 
-},{"../helpers/loginHelper.js":1,"../helpers/navigate.js":2,"../main.js":3,"axios":10}],6:[function(require,module,exports){
+},{"../helpers/loginHelper.js":1,"../helpers/navigate.js":3,"../main.js":4,"axios":11}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -274,6 +508,8 @@ exports.GamePage = void 0;
 var _main = require("../main.js");
 
 var _loginHelper = require("../helpers/loginHelper.js");
+
+var _map = require("../helpers/map.js");
 
 var _axios = _interopRequireDefault(require("axios"));
 
@@ -286,54 +522,66 @@ var GamePage = function GamePage(_ref) {
     loggedIn: false,
     movement: "",
     item: "",
+    canvas: "",
     render: render
   };
 
-  var theLogIn = function theLogIn(axios) {
-    return (0, _loginHelper.loadUser)(axios).then(function (res) {
+  var theLogIn = function theLogIn() {
+    console.log("called");
+    return (0, _loginHelper.loadUser)(_axios["default"]).then(function (res) {
       if (res.username) {
-        state.loggedIn = true;
-        state.render(representation());
-        console.log(res.data);
+        state.loggedIn = true; // let canvas = document.getElementById("game")
+
+        state.render(representation()); // console.log(canvas)
+
+        (0, _map.newMap)();
         return false;
       }
     })["catch"](function (err) {
       console.log(err);
     });
-  };
+  }; // const canvasfunc = (c) => {
+  // 	if (c) {
+  // 	  let ctx = c.getContext("2d");
+  // 		ctx.beginPath();
+  // 		ctx.rect(20, 20, 150, 100);
+  // 		ctx.stroke();
+  // 	}
+  // }
 
-  theLogIn(_axios["default"]);
-  (0, _main.intent)("movementNorth", function (e) {
-    state.movement = (0, _main.innerHtml)("north");
-    console.log(state.movement);
-    return false;
-  });
-  (0, _main.intent)("movementSouth", function (e) {
-    state.movement = (0, _main.innerHtml)("south");
-    console.log(state.movement);
-    return false;
-  });
-  (0, _main.intent)("movementEast", function (e) {
-    state.movement = (0, _main.innerHtml)("east");
-    console.log(state.movement);
-    return false;
-  });
-  (0, _main.intent)("movementWest", function (e) {
-    state.movement = (0, _main.innerHtml)("west");
-    console.log(state.movement);
-    return false;
-  });
-  (0, _main.intent)("pickUpItem", function (e) {
-    var items = Array.from((0, _main.listItems)('items'));
-    var checked = items.filter(function (i) {
-      return i.checked;
-    });
-    state.item = checked[0].value;
-    console.log(state.item);
-  });
+
+  theLogIn(); // intent("movementNorth", function(e) {
+  // 	state.movement = innerHtml("north")
+  // 	console.log(state.movement)
+  // 	return false
+  // })
+  // intent("movementSouth", function(e) {
+  // 	state.movement = innerHtml("south")
+  // 	console.log(state.movement)
+  // 	return false
+  // })
+  // intent("movementEast", function(e) {
+  // 	state.movement = innerHtml("east")
+  // 	console.log(state.movement)
+  // 	return false
+  // })
+  // intent("movementWest", function(e) {
+  // 	state.movement = innerHtml("west")
+  // 	console.log(state.movement)
+  // 	return false
+  // })
+  //
+  // intent("pickUpItem", function(e) {
+  // 	let items = Array.from(listItems('items'))
+  // 	let checked = items.filter(i => {
+  // 		return i.checked
+  // 	})
+  // 	state.item = checked[0].value
+  // 	console.log(state.item)
+  // })
 
   var representation = function representation() {
-    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div class=\"gameViewCont\">\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\t\tPickup Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\t\tDrop Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" onclick=movementNorth()>N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" onclick=movementEast()>E</div>\n\t\t\t\t\t\t\t<div id=\"west\" onclick=movementWest()>W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" onclick=movementSouth()>S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\t" : "<div class=\"loginplease\">Log In To Play</div>", "\n\t");
+    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div>\n\t\t\t<canvas id=\"game\" width=\"400\" height=\"400\"></canvas>\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\t\tPickup Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\t\tDrop Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" >N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" >E</div>\n\t\t\t\t\t\t\t<div id=\"west\" >W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" >S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\t" : "<div class=\"loginplease\">Log In To Play</div>", "\n\t");
   };
 
   return representation;
@@ -341,7 +589,7 @@ var GamePage = function GamePage(_ref) {
 
 exports.GamePage = GamePage;
 
-},{"../helpers/loginHelper.js":1,"../main.js":3,"axios":10}],7:[function(require,module,exports){
+},{"../helpers/loginHelper.js":1,"../helpers/map.js":2,"../main.js":4,"axios":11}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -389,7 +637,7 @@ var Header = function Header(_ref) {
 
 exports.Header = Header;
 
-},{"../helpers/navigate.js":2,"../main.js":3}],8:[function(require,module,exports){
+},{"../helpers/navigate.js":3,"../main.js":4}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -402,7 +650,8 @@ var _main = require("../main.js");
 var _navigate = require("../helpers/navigate.js");
 
 var Home = function Home(_ref) {
-  var render = _ref.render;
+  var render = _ref.render,
+      newMaze = _ref.newMaze;
   // let state = {theNames: [], render}
   // const names = () => {
   // 	return getNames()
@@ -436,7 +685,7 @@ var Home = function Home(_ref) {
 
 exports.Home = Home;
 
-},{"../helpers/navigate.js":2,"../main.js":3}],9:[function(require,module,exports){
+},{"../helpers/navigate.js":3,"../main.js":4}],10:[function(require,module,exports){
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -1405,9 +1654,9 @@ function () {
 /******/ })["default"];
 });
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = require('./lib/axios');
-},{"./lib/axios":12}],11:[function(require,module,exports){
+},{"./lib/axios":13}],12:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1583,7 +1832,7 @@ module.exports = function xhrAdapter(config) {
   });
 };
 
-},{"../core/createError":18,"./../core/settle":22,"./../helpers/buildURL":26,"./../helpers/cookies":28,"./../helpers/isURLSameOrigin":30,"./../helpers/parseHeaders":32,"./../utils":34}],12:[function(require,module,exports){
+},{"../core/createError":19,"./../core/settle":23,"./../helpers/buildURL":27,"./../helpers/cookies":29,"./../helpers/isURLSameOrigin":31,"./../helpers/parseHeaders":33,"./../utils":35}],13:[function(require,module,exports){
 'use strict';
 
 var utils = require('./utils');
@@ -1638,7 +1887,7 @@ module.exports = axios;
 // Allow use of default import syntax in TypeScript
 module.exports.default = axios;
 
-},{"./cancel/Cancel":13,"./cancel/CancelToken":14,"./cancel/isCancel":15,"./core/Axios":16,"./core/mergeConfig":21,"./defaults":24,"./helpers/bind":25,"./helpers/spread":33,"./utils":34}],13:[function(require,module,exports){
+},{"./cancel/Cancel":14,"./cancel/CancelToken":15,"./cancel/isCancel":16,"./core/Axios":17,"./core/mergeConfig":22,"./defaults":25,"./helpers/bind":26,"./helpers/spread":34,"./utils":35}],14:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1659,7 +1908,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 var Cancel = require('./Cancel');
@@ -1718,14 +1967,14 @@ CancelToken.source = function source() {
 
 module.exports = CancelToken;
 
-},{"./Cancel":13}],15:[function(require,module,exports){
+},{"./Cancel":14}],16:[function(require,module,exports){
 'use strict';
 
 module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1813,7 +2062,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 
 module.exports = Axios;
 
-},{"../helpers/buildURL":26,"./../utils":34,"./InterceptorManager":17,"./dispatchRequest":19,"./mergeConfig":21}],17:[function(require,module,exports){
+},{"../helpers/buildURL":27,"./../utils":35,"./InterceptorManager":18,"./dispatchRequest":20,"./mergeConfig":22}],18:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1867,7 +2116,7 @@ InterceptorManager.prototype.forEach = function forEach(fn) {
 
 module.exports = InterceptorManager;
 
-},{"./../utils":34}],18:[function(require,module,exports){
+},{"./../utils":35}],19:[function(require,module,exports){
 'use strict';
 
 var enhanceError = require('./enhanceError');
@@ -1887,7 +2136,7 @@ module.exports = function createError(message, config, code, request, response) 
   return enhanceError(error, config, code, request, response);
 };
 
-},{"./enhanceError":20}],19:[function(require,module,exports){
+},{"./enhanceError":21}],20:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -1975,7 +2224,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/isCancel":15,"../defaults":24,"./../helpers/combineURLs":27,"./../helpers/isAbsoluteURL":29,"./../utils":34,"./transformData":23}],20:[function(require,module,exports){
+},{"../cancel/isCancel":16,"../defaults":25,"./../helpers/combineURLs":28,"./../helpers/isAbsoluteURL":30,"./../utils":35,"./transformData":24}],21:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2019,7 +2268,7 @@ module.exports = function enhanceError(error, config, code, request, response) {
   return error;
 };
 
-},{}],21:[function(require,module,exports){
+},{}],22:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -2072,7 +2321,7 @@ module.exports = function mergeConfig(config1, config2) {
   return config;
 };
 
-},{"../utils":34}],22:[function(require,module,exports){
+},{"../utils":35}],23:[function(require,module,exports){
 'use strict';
 
 var createError = require('./createError');
@@ -2099,7 +2348,7 @@ module.exports = function settle(resolve, reject, response) {
   }
 };
 
-},{"./createError":18}],23:[function(require,module,exports){
+},{"./createError":19}],24:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2121,7 +2370,7 @@ module.exports = function transformData(data, headers, fns) {
   return data;
 };
 
-},{"./../utils":34}],24:[function(require,module,exports){
+},{"./../utils":35}],25:[function(require,module,exports){
 (function (process){
 'use strict';
 
@@ -2223,7 +2472,7 @@ utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
 module.exports = defaults;
 
 }).call(this,require('_process'))
-},{"./adapters/http":11,"./adapters/xhr":11,"./helpers/normalizeHeaderName":31,"./utils":34,"_process":36}],25:[function(require,module,exports){
+},{"./adapters/http":12,"./adapters/xhr":12,"./helpers/normalizeHeaderName":32,"./utils":35,"_process":37}],26:[function(require,module,exports){
 'use strict';
 
 module.exports = function bind(fn, thisArg) {
@@ -2236,7 +2485,7 @@ module.exports = function bind(fn, thisArg) {
   };
 };
 
-},{}],26:[function(require,module,exports){
+},{}],27:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2309,7 +2558,7 @@ module.exports = function buildURL(url, params, paramsSerializer) {
   return url;
 };
 
-},{"./../utils":34}],27:[function(require,module,exports){
+},{"./../utils":35}],28:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2325,7 +2574,7 @@ module.exports = function combineURLs(baseURL, relativeURL) {
     : baseURL;
 };
 
-},{}],28:[function(require,module,exports){
+},{}],29:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2380,7 +2629,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":34}],29:[function(require,module,exports){
+},{"./../utils":35}],30:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2396,7 +2645,7 @@ module.exports = function isAbsoluteURL(url) {
   return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
 };
 
-},{}],30:[function(require,module,exports){
+},{}],31:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2466,7 +2715,7 @@ module.exports = (
     })()
 );
 
-},{"./../utils":34}],31:[function(require,module,exports){
+},{"./../utils":35}],32:[function(require,module,exports){
 'use strict';
 
 var utils = require('../utils');
@@ -2480,7 +2729,7 @@ module.exports = function normalizeHeaderName(headers, normalizedName) {
   });
 };
 
-},{"../utils":34}],32:[function(require,module,exports){
+},{"../utils":35}],33:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -2535,7 +2784,7 @@ module.exports = function parseHeaders(headers) {
   return parsed;
 };
 
-},{"./../utils":34}],33:[function(require,module,exports){
+},{"./../utils":35}],34:[function(require,module,exports){
 'use strict';
 
 /**
@@ -2564,7 +2813,7 @@ module.exports = function spread(callback) {
   };
 };
 
-},{}],34:[function(require,module,exports){
+},{}],35:[function(require,module,exports){
 'use strict';
 
 var bind = require('./helpers/bind');
@@ -2900,7 +3149,7 @@ module.exports = {
   trim: trim
 };
 
-},{"./helpers/bind":25,"is-buffer":35}],35:[function(require,module,exports){
+},{"./helpers/bind":26,"is-buffer":36}],36:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -2913,7 +3162,7 @@ module.exports = function isBuffer (obj) {
     typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
 }
 
-},{}],36:[function(require,module,exports){
+},{}],37:[function(require,module,exports){
 // shim for using process in browser
 var process = module.exports = {};
 
@@ -3099,4 +3348,4 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}]},{},[3]);
+},{}]},{},[4]);

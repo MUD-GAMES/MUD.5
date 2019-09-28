@@ -20,7 +20,7 @@ import uuid
 class Player(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
     the_user = models.OneToOneField(User, on_delete=models.CASCADE)
-    currentRoom = models.IntegerField(default=0)
+    # currentRoom = models.IntegerField(default=0)
     def initialize(self):
         if self.currentRoom == 0:
             self.currentRoom = Room.objects.first().id

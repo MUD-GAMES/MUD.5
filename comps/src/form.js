@@ -5,7 +5,7 @@ import {onNavigate} from '../helpers/navigate.js'
 import axios from 'axios'
 
 export let SignUpForm = function({render}) {
-	let state = { username: "", password: "", email: "" }
+	let state = {}
 
 	intent("capInput", function(e) {
 		state.username = value("username")
@@ -24,18 +24,20 @@ export let SignUpForm = function({render}) {
 		<h3>Sign UP</h3>
 		<div class="form">
 			<div class="userNameCont">
-				<label class="regLab" for="username">Username</label>
+				<label class="regLab" for="username" required>Username</label>
 				<input id="username" type="text" >
 			</div>
 			<div class="emailCont">
-				<label class="regLab" for="email">Email</label>
+				<label class="regLab" for="email" required>Email</label>
 				<input id="email" type="email">
 			</div>
 			<div class="passwordCont">
-				<label class="reg" for="pass">Password</label>
+				<label class="reg" for="pass"required>Password</label>
 				<input id="password" type="password">
 			</div>
 			<button class="submit" onclick=capInput()>SignUP</button>
+			<div id="successMessage"></div>
+			<div id="failureMessage"></div>
 		</div>
 	</div>
 	`

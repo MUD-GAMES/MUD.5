@@ -2,7 +2,7 @@
 import {getNames, intent} from '../main.js'
 import {onNavigate} from '../helpers/navigate.js'
 
-export let Home = function({render}) {
+export let Home = function({render, newMaze}) {
 
 	// let state = {theNames: [], render}
 	// const names = () => {

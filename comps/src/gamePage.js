@@ -1,18 +1,22 @@
 import { intent, value, innerHtml, listItems} from '../main.js'
 import {loadUser} from '../helpers/loginHelper.js'
+import {newMap} from '../helpers/map.js'
 import axios from 'axios'
 
 export let GamePage = function({render}) {
 	// let state = { currentRoom: "", movement: "", player: "" }
-	let state = { loggedIn: false, movement: "", item: "", render}
+	let state = { loggedIn: false, movement: "", item: "", canvas: "", render}
 
-	const theLogIn = (axios) => {
+	const theLogIn = () => {
+		console.log("called")
 		return loadUser(axios)
 			.then(res => {
 				if (res.username) {
 					state.loggedIn = true
+					// let canvas = document.getElementById("game")
 					state.render(representation())
-					console.log(res.data)
+					// console.log(canvas)
+					newMap()
 					return false
 				}
 			})
@@ -21,46 +25,55 @@ export let GamePage = function({render}) {
 			})
 	}
 
-	theLogIn(axios)
-	
+	// const canvasfunc = (c) => {
+	// 	if (c) {
+	// 	  let ctx = c.getContext("2d");
+	// 		ctx.beginPath();
+	// 		ctx.rect(20, 20, 150, 100);
+	// 		ctx.stroke();
+	// 	}
+	// }
+			
 
-	intent("movementNorth", function(e) {
-		state.movement = innerHtml("north")
-		console.log(state.movement)
-		return false
-	})
-	intent("movementSouth", function(e) {
-		state.movement = innerHtml("south")
-		console.log(state.movement)
-		return false
-	})
-	intent("movementEast", function(e) {
-		state.movement = innerHtml("east")
-		console.log(state.movement)
-		return false
-	})
-	intent("movementWest", function(e) {
-		state.movement = innerHtml("west")
-		console.log(state.movement)
-		return false
-	})
-
-	intent("pickUpItem", function(e) {
-		let items = Array.from(listItems('items'))
-		let checked = items.filter(i => {
-			return i.checked
-		})
-		state.item = checked[0].value
-		console.log(state.item)
-	})
+	theLogIn()
 
 
+	// intent("movementNorth", function(e) {
+	// 	state.movement = innerHtml("north")
+	// 	console.log(state.movement)
+	// 	return false
+	// })
+	// intent("movementSouth", function(e) {
+	// 	state.movement = innerHtml("south")
+	// 	console.log(state.movement)
+	// 	return false
+	// })
+	// intent("movementEast", function(e) {
+	// 	state.movement = innerHtml("east")
+	// 	console.log(state.movement)
+	// 	return false
+	// })
+	// intent("movementWest", function(e) {
+	// 	state.movement = innerHtml("west")
+	// 	console.log(state.movement)
+	// 	return false
+	// })
+  //
+	// intent("pickUpItem", function(e) {
+	// 	let items = Array.from(listItems('items'))
+	// 	let checked = items.filter(i => {
+	// 		return i.checked
+	// 	})
+	// 	state.item = checked[0].value
+	// 	console.log(state.item)
+	// })
 
 
 	let representation = () => `
 	${state.loggedIn === true ? `
 		<div class="gamePageCont">
-			<div class="gameViewCont">
+			<div>
+			<canvas id="game" width="400" height="400"></canvas>
 			</div>
 			<div class="sideViewCont">
 				<div class="roomInfo">
@@ -99,14 +112,14 @@ export let GamePage = function({render}) {
 				<div class="controls">
 					<div class="directions">
 						<div class="dir">
-							<div id="north" onclick=movementNorth()>N</div>
+							<div id="north" >N</div>
 						</div>
 						<div class="dir">
-							<div id="east" onclick=movementEast()>E</div>
-							<div id="west" onclick=movementWest()>W</div>
+							<div id="east" >E</div>
+							<div id="west" >W</div>
 						</div>
 						<div class="directions">
-							<div id="south" onclick=movementSouth()>S</div>
+							<div id="south" >S</div>
 						</div>
 					</div>
 				</div>
@@ -115,5 +128,6 @@ export let GamePage = function({render}) {
 			`: `<div class="loginplease">Log In To Play</div>`
 		}
 	`
+
 		return representation
 }
