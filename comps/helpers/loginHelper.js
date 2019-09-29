@@ -23,7 +23,7 @@ export let loadUser = () => {
 export let loadPlayers = () => {
 	return axios
 		// .get('http://127.0.0.1:8000/api/auth/player/')
-		.get('https://mud5games.herokuapp.com/api/player/')
+		.get('https://mud5games.herokuapp.com/api/auth/player/')
 		.then(res => {
 			return res.data
 		})
@@ -35,7 +35,7 @@ export let loadPlayers = () => {
 export let loadRooms = () => {
 	return axios
 		// .get('http://127.0.0.1:8000/api/auth/rooms/')
-		.get('https://mud5games.herokuapp.com/api/player/')
+		.get('https://mud5games.herokuapp.com/api/auth/rooms/')
 		.then(res => {
 			console.log(res)
 			return res.data
