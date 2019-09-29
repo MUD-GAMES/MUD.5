@@ -19,56 +19,47 @@ import uuid
 
 class Player(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, unique=True)
-    the_user = models.OneToOneField(User, on_delete=models.CASCADE)
-    # currentRoom = models.IntegerField(default=0)
+    the_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    currentRoom = models.IntegerField(default=0)
+
     def initialize(self):
         if self.currentRoom == 0:
             self.currentRoom = Room.objects.first().id
             self.save()
+
     def room(self):
         try:
             return Room.objects.get(id=self.currentRoom)
         except Room.DoesNotExist:
             self.initialize()
-
             return self.room()
 
 
-class Rooms(models.Model):
+class Room(models.Model):
     Room_Name=models.CharField(max_length=50)
     Description = models.CharField(max_length=500, default="DEFAULT DESCRIPTION")
-    N_to = models.IntegerField(default=0)
-    S_to = models.IntegerField(default=0)
-    E_to = models.IntegerField(default=0)
-    W_to = models.IntegerField(default=0)
-    Item=models.ManyToManyField('Items', blank=True)
+    connect = models.IntegerField(default=0)
 
-    def connectRooms(self, destinationRoom, direction):
+    def connectRooms(self, destinationRoom):
         destinationRoomID = destinationRoom.id
         try:
             destinationRoom = Room.objects.get(id=destinationRoomID)
         except Room.DoesNotExist:
             print("That room does not exist")
+        if destinationRoom:
+            self.connect = destinationRoomID
+            self.save()
         else:
-            if direction == "n":
-                self.n_to = destinationRoomID
-            elif direction == "s":
-                self.s_to = destinationRoomID
-            elif direction == "e":
-                self.e_to = destinationRoomID
-            elif direction == "w":
-                self.w_to = destinationRoomID
-            else:
-                print("Invalid direction")
-                return
+            print("Invalid direction")
+            return
             self.save()
 
-class Items(models.Model):
-    Item_Name=models.CharField(max_length=50)
-    Room=models.ManyToManyField('Rooms', blank=True)
-
-    def __str__(self):
-        return self.Item_Name, self.Room
+# class Items(models.Model):
+#     Item_Name=models.CharField(max_length=50)
+#     Room=models.ManyToManyField('Room', blank=True)
+#
+#     def __str__(self):
+#         return self.Item_Name, self.Room
 
 
 # @receiver(post_save, sender=User)

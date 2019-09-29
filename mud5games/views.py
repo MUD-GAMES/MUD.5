@@ -7,7 +7,7 @@ from rest_framework import generics, viewsets, permissions
 from rest_framework import serializers
 from rest_framework.response import Response
 from knox.models import AuthToken
-from mud5games.models import User
+from mud5games.models import Player, Room
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.utils.decorators import method_decorator
@@ -28,6 +28,8 @@ class CreateUserSerializer(serializers.ModelSerializer):
         user = User.objects.create_user(validated_data['username'],
                                         validated_data['email'],
                                         validated_data['password'])
+        if user.pk is not None:
+            Player.objects.create(the_user=user)
         return user
 
 class UserSerializer(serializers.ModelSerializer):
@@ -88,6 +90,46 @@ class UserAPI(generics.RetrieveAPIView):
     def get_object(self):
         return self.request.user
 
+# Return User Data From Login
+# =======================================================
+# =======================================================
+
+class PlayerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Player
+        fields = [ 'id', 'the_user', 'currentRoom' ]
+
+
+class PlayerApi(generics.ListAPIView):
+    serializer_class = PlayerSerializer
+    queryset = Player.objects.all()
+    def get(self, request):
+        return self.list(request)
+
+    def put(self, request, pk, format=None):
+        player = self.get_object(pk)
+        serializer = PlayerSerializer(player, data=requrest.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# Room Data
+# =======================================================
+# =======================================================
+
+class RoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = ["id","Room_Name", "Description", "connect" ]
+
+class RoomsApi(generics.ListAPIView):
+    serializer_class = RoomSerializer
+    queryset = Room.objects.all()
+    def get(self, request):
+        return self.list(request)
+
+
 # Front End Render
 # =======================================================
 # =======================================================
@@ -99,14 +141,9 @@ class FrontendRenderView(View):
         return render(request, "front_end_entry.html",{})
 
 
-    # class SignUp(generic.CreateView):
-#     form_class = UserCreationForm
-#     success_url = reverse_lazy('accounts/login/')
-#     template_name = 'registration/registration.html'
-
-class UserView(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
+# class UserView(viewsets.ModelViewSet):
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
 
 # class UserView(generics.ListAPIView):
 #     queryset = User.objects.all()

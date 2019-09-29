@@ -1,7 +1,6 @@
 import axios from 'axios'
 import {onNavigate} from './navigate.js'
 
-export let userData;
 
 export let loadUser = () => {
 	let token = localStorage.getItem('token')
@@ -13,13 +12,35 @@ export let loadUser = () => {
 			.get('http://127.0.0.1:8000/api/auth/user/', {headers, })
 			// .get('https://mud5games.herokuapp.com/api/auth/user/', {headers, })
 			.then(res => {
-				console.log(res.data)
 				return res.data
 			})
 			.catch(err => {
 				console.log(err)
 			})
 
+}
+
+export let loadPlayers = () => {
+	return axios
+		.get('http://127.0.0.1:8000/api/auth/player/')
+		.then(res => {
+			return res.data
+		})
+		.catch(err => {
+			console.log(err)
+		})
+} 
+
+export let loadRooms = () => {
+	return axios
+		.get('http://127.0.0.1:8000/api/auth/rooms/')
+		.then(res => {
+			console.log(res)
+			return res.data
+		})
+		.catch(err => {
+			console.log(err)
+		})
 }
 
 const loginNav = () => {

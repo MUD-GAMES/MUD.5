@@ -1,11 +1,11 @@
 import { intent, value, innerHtml, listItems} from '../main.js'
-import {loadUser} from '../helpers/loginHelper.js'
+import {loadUser, loadPlayers, loadRooms } from '../helpers/loginHelper.js'
 import {newMap} from '../helpers/map.js'
 import axios from 'axios'
 
 export let GamePage = function({render}) {
 	// let state = { currentRoom: "", movement: "", player: "" }
-	let state = { loggedIn: false, movement: "", item: "", canvas: "", render}
+	let state = { loggedIn: false, user: {}, rooms: {}, player: {}, item: "", render}
 
 	const theLogIn = () => {
 		console.log("called")
@@ -13,10 +13,32 @@ export let GamePage = function({render}) {
 			.then(res => {
 				if (res.username) {
 					state.loggedIn = true
+					state.user = res
 					// let canvas = document.getElementById("game")
 					state.render(representation())
 					// console.log(canvas)
-					newMap()
+					loadPlayers() 
+						.then(res => {
+							let newPlayer = res.filter(p => {
+								if (p.the_user === state.user.id ) {
+									return p
+								}
+								state.player = newPlayer
+
+							})
+						})
+						.catch(err => {
+							console.log(err)
+						})
+						loadRooms()
+						.then(res => {
+							state.rooms = res
+							newMap(state)
+							console.log(state)
+						})
+						.catch(err => {
+							console.log(err)
+						})
 					return false
 				}
 			})
@@ -73,7 +95,7 @@ export let GamePage = function({render}) {
 	${state.loggedIn === true ? `
 		<div class="gamePageCont">
 			<div>
-			<canvas id="game" width="400" height="400"></canvas>
+				<canvas id="game" width="500" height="500"></canvas>
 			</div>
 			<div class="sideViewCont">
 				<div class="roomInfo">

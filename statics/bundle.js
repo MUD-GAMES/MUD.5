@@ -4,16 +4,13 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.logInUser = exports.createNewUser = exports.loadUser = exports.userData = void 0;
+exports.logInUser = exports.createNewUser = exports.loadRooms = exports.loadPlayers = exports.loadUser = void 0;
 
 var _axios = _interopRequireDefault(require("axios"));
 
 var _navigate = require("./navigate.js");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
-
-var userData;
-exports.userData = userData;
 
 var loadUser = function loadUser() {
   var token = localStorage.getItem('token');
@@ -25,7 +22,6 @@ var loadUser = function loadUser() {
     headers: headers
   }) // .get('https://mud5games.herokuapp.com/api/auth/user/', {headers, })
   .then(function (res) {
-    console.log(res.data);
     return res.data;
   })["catch"](function (err) {
     console.log(err);
@@ -33,6 +29,27 @@ var loadUser = function loadUser() {
 };
 
 exports.loadUser = loadUser;
+
+var loadPlayers = function loadPlayers() {
+  return _axios["default"].get('http://127.0.0.1:8000/api/auth/player/').then(function (res) {
+    return res.data;
+  })["catch"](function (err) {
+    console.log(err);
+  });
+};
+
+exports.loadPlayers = loadPlayers;
+
+var loadRooms = function loadRooms() {
+  return _axios["default"].get('http://127.0.0.1:8000/api/auth/rooms/').then(function (res) {
+    console.log(res);
+    return res.data;
+  })["catch"](function (err) {
+    console.log(err);
+  });
+};
+
+exports.loadRooms = loadRooms;
 
 var loginNav = function loginNav() {
   (0, _navigate.onNavigate)('/login');
@@ -104,17 +121,35 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.newMap = void 0;
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
-var newMap = function newMap() {
-  console.log('newMap');
-  var ctx = null;
-  var gameMap = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0];
-  console.log(gameMap);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+// import arrayGen from './mapArrayGen.js'
+var newMap = function newMap(state) {
+  var ctx = null; // let gameMap = [
+  // 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  // 	0, 1, 1, 1, 0, 1, 1, 1, 1, 0,
+  // 	0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
+  // 	0, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+  // 	0, 1, 0, 1, 0, 0, 0, 1, 1, 0,
+  // 	0, 1, 0, 1, 0, 1, 0, 0, 1, 0,
+  // 	0, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+  // 	0, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+  // 	0, 1, 1, 1, 0, 1, 1, 1, 1, 0,
+  // 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+  // ];
+
   var tileW = 40,
       tileH = 40;
   var mapW = 10,
@@ -123,11 +158,224 @@ var newMap = function newMap() {
       frameCount = 0,
       framesLastSecond = 0,
       lastFrameTime = 0;
-  var keysDown = {
-    37: false,
-    38: false,
-    39: false,
-    40: false
+  var rooms = state.rooms;
+  var floorTypes = {
+    solid: 0,
+    path: 1,
+    room: 2
+  };
+  var tileTypes = {
+    0: {
+      colour: "#685b48",
+      floor: floorTypes.solid
+    },
+    1: {
+      colour: "#5aa457",
+      floor: floorTypes.path
+    },
+    2: {
+      colour: "#e8bd7a",
+      floor: floorTypes.room
+    }
+  };
+  var viewport = {
+    screen: [0, 0],
+    startTile: [0, 0],
+    endTile: [0, 0],
+    offset: [0, 0],
+    update: function update(px, py) {
+      this.offset[0] = Math.floor(this.screen[0] / 4 - px);
+      this.offset[1] = Math.floor(this.screen[1] / 4 - py);
+      var tile = [Math.floor(px / tileW), Math.floor(py / tileH)];
+      this.startTile[0] = tile[0] - 1 - Math.ceil(this.screen[0] / 2 / tileW);
+      this.startTile[1] = tile[1] - 1 - Math.ceil(this.screen[1] / 2 / tileH);
+
+      if (this.startTile[0] < 0) {
+        this.startTile[0] = 0;
+      }
+
+      if (this.startTile[1] < 0) {
+        this.startTile[1] = 0;
+      }
+
+      this.endTile[0] = tile[0] + 1 + Math.ceil(this.screen[0] / 2 / tileW);
+      this.endTile[1] = tile[1] + 1 + Math.ceil(this.screen[1] / 2 / tileH);
+
+      if (this.endTile[0] >= mapW) {
+        this.endTile[0] = mapW - 1;
+      }
+
+      if (this.endTile[1] >= mapH) {
+        this.endTile[1] = mapH - 1;
+      }
+    }
+  };
+
+  var borderGen = function borderGen(x, y) {
+    var aLength = x * y;
+
+    var aMap = _toConsumableArray(Array(aLength)).map(function (_, i) {
+      return i;
+    });
+
+    var anotherMap = aMap.map(function (id, index) {
+      if (index < x || index % y === 0 || index >= x * y - x || index % x === x - 1) {
+        return index;
+      }
+    });
+    return anotherMap;
+  };
+
+  var RandomNumGen = function RandomNumGen(x, y) {
+    var aLength = x * y;
+    return Math.floor(Math.random() * (aLength - 1) + 2);
+  };
+
+  var arrayGen = function arrayGen(x, y) {
+    var randomIndex = [];
+    var values = {};
+    var runtime = rooms.length;
+    var fborder = borderGen(x, y);
+    var roomOrder = [];
+    var path = [];
+
+    var findpath = function findpath(start, end) {
+      var the_start = start;
+
+      while (true) {
+        if ((end - the_start) / 10 >= 1 && end > start) {
+          the_start += 10;
+
+          if (the_start === end) {
+            break;
+          }
+
+          path.push(the_start);
+        } else if ((end - the_start) / 10 < 1 && end - the_start > 0 && end > start) {
+          the_start += 1;
+
+          if (the_start === end) {
+            break;
+          }
+
+          path.push(the_start);
+        } else if ((end - the_start) / 10 <= -1 && start > end) {
+          the_start -= 10;
+
+          if (the_start === end || end === undefined) {
+            break;
+          }
+
+          path.push(the_start);
+        } else if ((end - the_start) / 10 > -1 && start > end) {
+          the_start -= 1;
+
+          if (the_start === end || end === undefined) {
+            break;
+          }
+
+          path.push(the_start);
+        } // if (start < end && the_start > end) {
+        // 	path = []
+        // 	the_start = start
+        // }
+        // if (start > end && the_start < end) {
+        // 	path = []
+        // 	the_start = start
+        // }
+
+      }
+    };
+
+    var directionLoop = function directionLoop(num) {
+      // const breakCheck = (prev, num) => {
+      // 	const checkNumbs = []
+      // 	const border = borderGen()
+      // 	if ( ) {
+      // 		return false
+      // 	} 
+      // 	return true
+      // 	
+      // }
+      var currentRoom = rooms[1];
+      var prevIndx = 11;
+      roomOrder.push(currentRoom);
+
+      var _loop = function _loop(i) {
+        var newNumb = RandomNumGen(x, y);
+
+        while (fborder.includes(newNumb) || randomIndex.includes(newNumb)) {
+          newNumb = RandomNumGen(x, y);
+        }
+
+        var arrayObjKeys = Object.keys(currentRoom);
+        var arrayObjValues = Object.values(currentRoom);
+        var arrayObjKey = arrayObjKeys.indexOf("connect");
+        var arrayObjVal = arrayObjValues[arrayObjKey];
+        var newCurrentRoom = rooms.filter(function (r) {
+          if (arrayObjVal === r.id) {
+            return r;
+          }
+        });
+        currentRoom = newCurrentRoom[0];
+        randomIndex.push(newNumb);
+        roomOrder.push(currentRoom);
+      };
+
+      for (var i = 1; i < rooms.length; i++) {
+        _loop(i);
+      }
+    };
+
+    var startingRoom = x + 1;
+    randomIndex.push(startingRoom);
+    directionLoop();
+
+    for (var _x = 0; _x < randomIndex.length; _x++) {
+      if (randomIndex[_x + 1] != undefined) {
+        findpath(randomIndex[_x], randomIndex[_x + 1]);
+      } // randomIndex.forEach((x , i) => {
+      // 	if (randomIndex[i + 1] != undefined) {
+      // 		findpath(x, randomIndex[i + 1])
+      // 	}
+      // })
+
+    }
+
+    var aLength = x * y;
+
+    var aMap = _toConsumableArray(Array(aLength)).map(function (_, i) {
+      return i;
+    });
+
+    var border = borderGen(x, y);
+    var anotherMap = aMap.map(function (id, index) {
+      if (border.includes(index)) {
+        return id = 0;
+      } else if (randomIndex.includes(index)) {
+        var raIndex = randomIndex.indexOf(index);
+        var thereturnid = roomOrder[raIndex].id;
+        return id = 2;
+      } else if (path.includes(index)) {
+        return id = 1;
+      } else {
+        return id = 0;
+      }
+    });
+    console.log(randomIndex);
+    console.log(path);
+    return anotherMap;
+  };
+
+  var gameMap = arrayGen(mapW, mapH);
+
+  var Room = function Room(props) {
+    _classCallCheck(this, Room);
+
+    this.position = props.position;
+    this.dimensions = props.dimensions;
+    this.description = props.description;
+    this.linkedRoom = props.linkedRoom;
   };
 
   var Character =
@@ -150,6 +398,63 @@ var newMap = function newMap() {
         this.tileFrom = [x, y];
         this.tileTo = [x, y];
         this.position = [tileW * x + (tileW - this.dimensions[0]) / 2, tileH * y + (tileH - this.dimensions[1]) / 2];
+      }
+    }, {
+      key: "canMoveTo",
+      value: function canMoveTo(x, y) {
+        if (x < 0 || x >= mapW || y < 0 || y >= mapH) {
+          return false;
+        }
+
+        if (tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.path || tileTypes[gameMap[toIndex(x, y)]].floor == floorTypes.room) {
+          return true;
+        }
+
+        return false;
+      }
+    }, {
+      key: "canMoveUp",
+      value: function canMoveUp() {
+        return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] - 1);
+      }
+    }, {
+      key: "canMoveDown",
+      value: function canMoveDown() {
+        return this.canMoveTo(this.tileFrom[0], this.tileFrom[1] + 1);
+      }
+    }, {
+      key: "canMoveLeft",
+      value: function canMoveLeft() {
+        return this.canMoveTo(this.tileFrom[0] - 1, this.tileFrom[1]);
+      }
+    }, {
+      key: "canMoveRight",
+      value: function canMoveRight() {
+        return this.canMoveTo(this.tileFrom[0] + 1, this.tileFrom[1]);
+      }
+    }, {
+      key: "moveLeft",
+      value: function moveLeft(t) {
+        this.tileTo[0] -= 1;
+        this.timeMoved = t;
+      }
+    }, {
+      key: "moveRight",
+      value: function moveRight(t) {
+        this.tileTo[0] += 1;
+        this.timeMoved = t;
+      }
+    }, {
+      key: "moveUp",
+      value: function moveUp(t) {
+        this.tileTo[1] -= 1;
+        this.timeMoved = t;
+      }
+    }, {
+      key: "moveDown",
+      value: function moveDown(t) {
+        this.tileTo[1] += 1;
+        this.timeMoved = t;
       }
     }, {
       key: "processMovement",
@@ -236,10 +541,9 @@ var newMap = function newMap() {
   west.addEventListener("mouseup", function (e) {
     wmove = false;
   });
+  viewport.screen = [document.getElementById('game').width, document.getElementById('game').height];
 
   var drawGame = function drawGame() {
-    console.log('drawGame');
-
     if (ctx == null) {
       return;
     }
@@ -257,38 +561,30 @@ var newMap = function newMap() {
     }
 
     if (!player.processMovement(currentFrameTime)) {
-      if (nmove && player.tileFrom[1] > 0 && gameMap[toIndex(player.tileFrom[0], player.tileFrom[1] - 1)] == 1) {
-        player.tileTo[1] -= 1;
-      } else if (smove && player.tileFrom[1] < mapH - 1 && gameMap[toIndex(player.tileFrom[0], player.tileFrom[1] + 1)] == 1) {
-        player.tileTo[1] += 1;
-      } else if (emove && player.tileFrom[0] > 0 && gameMap[toIndex(player.tileFrom[0] - 1, player.tileFrom[1])] == 1) {
-        player.tileTo[0] -= 1;
-      } else if (wmove && player.tileFrom[0] < mapW - 1 && gameMap[toIndex(player.tileFrom[0] + 1, player.tileFrom[1])] == 1) {
-        player.tileTo[0] += 1;
-      }
-
-      if (player.tileFrom[0] != player.tileTo[0] || player.tileFrom[1] != player.tileTo[1]) {
-        player.timeMoved = currentFrameTime;
+      if (nmove && player.canMoveUp()) {
+        player.moveUp(currentFrameTime);
+      } else if (smove && player.canMoveDown()) {
+        player.moveDown(currentFrameTime);
+      } else if (emove && player.canMoveLeft()) {
+        player.moveLeft(currentFrameTime);
+      } else if (wmove && player.canMoveRight()) {
+        player.moveRight(currentFrameTime);
       }
     }
 
-    for (var y = 0; y < mapH; ++y) {
-      for (var x = 0; x < mapW; ++x) {
-        switch (gameMap[y * mapW + x]) {
-          case 0:
-            ctx.fillStyle = "#685b48";
-            break;
+    viewport.update(player.position[0] + player.dimensions[0] / 2, player.position[1] + player.dimensions[1] / 2);
+    ctx.fillStyle = "#000000";
+    ctx.fillRect(0, 0, viewport.screen[0], viewport.screen[1]);
 
-          default:
-            ctx.fillStyle = "#5aa457";
-        }
-
-        ctx.fillRect(x * tileW, y * tileH, tileW, tileH);
+    for (var y = viewport.startTile[1]; y <= viewport.endTile[1]; ++y) {
+      for (var x = viewport.startTile[0]; x <= viewport.endTile[0]; ++x) {
+        ctx.fillStyle = tileTypes[gameMap[toIndex(x, y)]].colour;
+        ctx.fillRect(viewport.offset[0] + x * tileW, viewport.offset[1] + y * tileH, tileW, tileH);
       }
     }
 
     ctx.fillStyle = "#0000ff";
-    ctx.fillRect(player.position[0], player.position[1], player.dimensions[0], player.dimensions[1]);
+    ctx.fillRect(viewport.offset[0] + player.position[0], viewport.offset[1] + player.position[1], player.dimensions[0], player.dimensions[1]);
     ctx.fillStyle = "#ff0000";
     ctx.fillText("FPS: " + framesLastSecond, 10, 20);
     lastFrameTime = currentFrameTime;
@@ -520,9 +816,10 @@ var GamePage = function GamePage(_ref) {
   // let state = { currentRoom: "", movement: "", player: "" }
   var state = {
     loggedIn: false,
-    movement: "",
+    user: {},
+    rooms: {},
+    player: {},
     item: "",
-    canvas: "",
     render: render
   };
 
@@ -530,11 +827,29 @@ var GamePage = function GamePage(_ref) {
     console.log("called");
     return (0, _loginHelper.loadUser)(_axios["default"]).then(function (res) {
       if (res.username) {
-        state.loggedIn = true; // let canvas = document.getElementById("game")
+        state.loggedIn = true;
+        state.user = res; // let canvas = document.getElementById("game")
 
         state.render(representation()); // console.log(canvas)
 
-        (0, _map.newMap)();
+        (0, _loginHelper.loadPlayers)().then(function (res) {
+          var newPlayer = res.filter(function (p) {
+            if (p.the_user === state.user.id) {
+              return p;
+            }
+
+            state.player = newPlayer;
+          });
+        })["catch"](function (err) {
+          console.log(err);
+        });
+        (0, _loginHelper.loadRooms)().then(function (res) {
+          state.rooms = res;
+          (0, _map.newMap)(state);
+          console.log(state);
+        })["catch"](function (err) {
+          console.log(err);
+        });
         return false;
       }
     })["catch"](function (err) {
@@ -581,7 +896,7 @@ var GamePage = function GamePage(_ref) {
   // })
 
   var representation = function representation() {
-    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div>\n\t\t\t<canvas id=\"game\" width=\"400\" height=\"400\"></canvas>\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\t\tPickup Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\t\tDrop Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" >N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" >E</div>\n\t\t\t\t\t\t\t<div id=\"west\" >W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" >S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\t" : "<div class=\"loginplease\">Log In To Play</div>", "\n\t");
+    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div>\n\t\t\t\t<canvas id=\"game\" width=\"500\" height=\"500\"></canvas>\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\t\tPickup Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\t\tDrop Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" >N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" >E</div>\n\t\t\t\t\t\t\t<div id=\"west\" >W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" >S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\t" : "<div class=\"loginplease\">Log In To Play</div>", "\n\t");
   };
 
   return representation;
