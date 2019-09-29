@@ -110,7 +110,7 @@ WSGI_APPLICATION = 'mud5.wsgi.application'
 #
 #     },
 
-}
+# }
 
 DATABASES = {}
 # DATABASES['default'] = dj_database_url.config(default='postgres://nkhgarbamwaqnh:88e2fc8e940ededf83f878f3e39319f0b87789f686323c1d57e671e877ff6d2a@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d2qpgtac528fr6')
