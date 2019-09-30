@@ -10,12 +10,15 @@ django-heroku==0.3.1
 django-rest-knox==4.1.0
 djangorestframework==3.10.3
 ezenv==0.86
+Faker==2.0.2
 gunicorn==19.9.0
 psycopg2==2.8.3
 pycparser==2.19
+python-dateutil==2.8.0
 python-decouple==3.1
 python-dotenv==0.10.3
 pytz==2019.2
 six==1.12.0
 sqlparse==0.3.0
+text-unidecode==1.3
 whitenoise==4.1.3
