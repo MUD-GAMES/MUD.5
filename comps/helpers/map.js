@@ -13,16 +13,40 @@ export const newMap = (state) => {
 	// 	0, 1, 1, 1, 0, 1, 1, 1, 1, 0,
 	// 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 	// ];
+	//
 
 
 	let tileW = 40, tileH = 40;
-	let mapW = 10, mapH = 10;
+	let mapW = 10, mapH = 200;
 	let currentSecond = 0, frameCount = 0, framesLastSecond = 0, lastFrameTime = 0;
 	let rooms = state.rooms
+	let currentIndex = 11
+	let realRooms = {} 
 	const floorTypes = {
 		solid: 0,
 		path : 1,
 		room : 2
+	}
+
+	let roomName = document.getElementById("room")
+	let desc = document.getElementById("desc")
+	let name = document.getElementById("name")
+	roomName.innerHTML = state.rooms[0].Room_Name
+	name.innerHTML = state.user.username
+	desc.innerHTML = state.rooms[0].Description
+
+	const findRoom = (move) => {
+		if (realRooms[currentIndex]) {
+			roomName.innerHTML = realRooms[currentIndex].Room_Name
+			desc.innerHTML = realRooms[currentIndex].Description
+			console.log(realRooms[currentIndex])
+			move = false
+			return false
+		} else {
+			console.log("path")
+			move = false
+			return false
+		}
 	}
 
 	let tileTypes = {
@@ -72,8 +96,9 @@ export const newMap = (state) => {
 		return Math.floor(Math.random() * (aLength - 1)  + 2)
 	}
 
+
+	let randomIndex = []
 	const arrayGen = (x,y) => {
-		let randomIndex = []
 		let values = {}
 		let runtime = rooms.length
 		let fborder = borderGen(x,y)
@@ -133,11 +158,18 @@ export const newMap = (state) => {
 			let currentRoom = rooms[1]
 			let prevIndx = 11 
 			roomOrder.push(currentRoom)
+			realRooms[11] = currentRoom
+			let startingRoom = x + 1
+			randomIndex.push(startingRoom)
+
 			for (let i = 1; i < rooms.length; i++) {
 				let newNumb = RandomNumGen(x,y)
 				while (fborder.includes(newNumb) || randomIndex.includes(newNumb)) {
 					newNumb = RandomNumGen(x,y)
 				}
+				// } else {
+				// 	prevIndx = newNumb
+				// }
 				let arrayObjKeys = Object.keys(currentRoom)
 				let arrayObjValues = Object.values(currentRoom)
 				let arrayObjKey = arrayObjKeys.indexOf("connect")
@@ -150,11 +182,11 @@ export const newMap = (state) => {
 				currentRoom = newCurrentRoom[0]
 				randomIndex.push(newNumb)
 				roomOrder.push(currentRoom)
+				realRooms[newNumb] = newCurrentRoom[0]
 			}
 		}
-		let startingRoom = x + 1
-		randomIndex.push(startingRoom)
 		directionLoop()
+		console.log(realRooms)
 
 		for (let x = 0; x < randomIndex.length; x++) {
 			if (randomIndex[x + 1] != undefined) {
@@ -170,22 +202,25 @@ export const newMap = (state) => {
 		let aMap = [...Array(aLength)].map((_ , i) => i)
 		let border = borderGen(x,y)
 		let anotherMap = aMap.map((id, index) => {
-			if (border.includes(index)) {
+			if (border.includes.index) {
 				return id = 0
-			} else if ( randomIndex.includes(index)) {
-					const raIndex = randomIndex.indexOf(index)
-					const thereturnid = roomOrder[raIndex].id
+			}
+			else if ( realRooms[index]) {
+					// const raIndex = randomIndex.indexOf(index)
+					// const thereturnid = roomOrder[raIndex].id
+				 	// console.log(thereturnid)
 					return id = 2
 
 			}else if (path.includes(index)) {
 				return id = 1
+			// } else if (border.includes(index)) {
+			// 	return id = 0
+			 
 			} else {
 				return id = 0
 			} 
 		})
 
-		console.log(randomIndex)
-		console.log(path)
 		return anotherMap
 
 	}
@@ -270,9 +305,9 @@ export const newMap = (state) => {
 		tileFrom: [1,1],
 		tileTo: [1,1],
 		timeMoved: 0,
-		dimensions: [30,30],
-		position: [45,45],
-		delayMove: 700,
+		dimensions: [10,10],
+		position: [55,55],
+		delayMove: 100,
 	});
 
 	const toIndex = (x,y) => {
@@ -294,30 +329,42 @@ export const newMap = (state) => {
 		let wmove = false;
 
 	north.addEventListener("mousedown", function(e){
-		nmove = true
+		if (player.canMoveUp()) {
+			nmove = true
+			currentIndex -= 10
+		}
 	})
 	south.addEventListener("mousedown", function(e){
 		smove = true
+		if (player.canMoveDown()) {
+			currentIndex += 10
+		}
 	})
 		
 	east.addEventListener("mousedown", function(e){
 		emove = true
+		if (player.canMoveLeft()) {
+			currentIndex -= 1
+		}
 	})
 	west.addEventListener("mousedown", function(e){
 		wmove = true
+		if (player.canMoveRight()) {
+			currentIndex += 1
+		}
 	})
 	north.addEventListener("mouseup", function(e){
-		nmove = false
+		nmove = findRoom()
 	})
 	south.addEventListener("mouseup", function(e){
-		smove = false
+		smove = findRoom()
 	})
 		
 	east.addEventListener("mouseup", function(e){
-		emove = false
+		emove = findRoom()
 	})
 	west.addEventListener("mouseup", function(e){
-		wmove = false
+		wmove = findRoom()
 	})
 
 	viewport.screen = [document.getElementById('game').width,

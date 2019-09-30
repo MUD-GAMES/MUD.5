@@ -1,11 +1,11 @@
 import { intent, value, innerHtml, listItems} from '../main.js'
 import {loadUser, loadPlayers, loadRooms } from '../helpers/loginHelper.js'
-import {newMap} from '../helpers/map.js'
+import {newMap, findRoom} from '../helpers/map.js'
 import axios from 'axios'
 
 export let GamePage = function({render}) {
 	// let state = { currentRoom: "", movement: "", player: "" }
-	let state = { loggedIn: false, user: {}, rooms: {}, player: {}, item: "", render}
+	let state = { loggedIn: false, user: {},room: {}, rooms: {}, player: {}, item: "", render}
 
 	const theLogIn = () => {
 		console.log("called")
@@ -19,11 +19,14 @@ export let GamePage = function({render}) {
 					// console.log(canvas)
 					loadPlayers() 
 						.then(res => {
+							console.log(res)
 							let newPlayer = res.filter(p => {
+								console.log(p)
 								if (p.the_user === state.user.id ) {
 									return p
 								}
 								state.player = newPlayer
+								console.log(newPlayer)
 
 							})
 						})
@@ -34,7 +37,6 @@ export let GamePage = function({render}) {
 						.then(res => {
 							state.rooms = res
 							newMap(state)
-							console.log(state)
 						})
 						.catch(err => {
 							console.log(err)
@@ -59,36 +61,9 @@ export let GamePage = function({render}) {
 
 	theLogIn()
 
+	let descRoom = document.getElementById("name")
 
-	// intent("movementNorth", function(e) {
-	// 	state.movement = innerHtml("north")
-	// 	console.log(state.movement)
-	// 	return false
-	// })
-	// intent("movementSouth", function(e) {
-	// 	state.movement = innerHtml("south")
-	// 	console.log(state.movement)
-	// 	return false
-	// })
-	// intent("movementEast", function(e) {
-	// 	state.movement = innerHtml("east")
-	// 	console.log(state.movement)
-	// 	return false
-	// })
-	// intent("movementWest", function(e) {
-	// 	state.movement = innerHtml("west")
-	// 	console.log(state.movement)
-	// 	return false
-	// })
-  //
-	// intent("pickUpItem", function(e) {
-	// 	let items = Array.from(listItems('items'))
-	// 	let checked = items.filter(i => {
-	// 		return i.checked
-	// 	})
-	// 	state.item = checked[0].value
-	// 	console.log(state.item)
-	// })
+
 
 
 	let representation = () => `
@@ -100,28 +75,13 @@ export let GamePage = function({render}) {
 			<div class="sideViewCont">
 				<div class="roomInfo">
 					<div class="descCont">
-						<p class="room">Test Room</p>
-						<p class="desc">This is the room info</p>
-					</div>
-					<div class="itemList">
-						<ul>
-							<li><input  class="items" id="1" type="radio", name="item" value="item1">item 1</li>
-							<li><input  class="items" id="2" type="radio", name="item" value="item2">item 2</li>
-							<li><input  class="items" id="3" type="radio", name="item" value=item3>item 3</li>
-						</ul>
-					<div class="itemControls">
-						<div class="pickup" onclick=pickUpItem()>
-							Pickup Item
-						</div>
-						<div class="drop">
-							Drop Item
-						</div>
-					</div>
+						<p id="room" class="room">Test Room</p>
+						<p id="desc" class="desc"></p>
 					</div>
 				</div>
 				<div class="playerInfo">
 					<div class="gInfo">
-						<div class="name">
+						<div id ="name" class="name">
 							badCompany55
 						</div>
 					</div>

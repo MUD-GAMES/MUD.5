@@ -41,7 +41,7 @@ class Room(models.Model):
     connect = models.IntegerField(default=0)
 
     def connectRooms(self, destinationRoom):
-        destinationRoomID = destinationRoom.id
+        destinationRoomID = destinationRoom
         try:
             destinationRoom = Room.objects.get(id=destinationRoomID)
         except Room.DoesNotExist:
@@ -51,9 +51,13 @@ class Room(models.Model):
             self.save()
         else:
             print("Invalid direction")
+            self.connect = 0
             return
             self.save()
 
+
+class World:
+    world=models.CharField()
 # class Items(models.Model):
 #     Item_Name=models.CharField(max_length=50)
 #     Room=models.ManyToManyField('Room', blank=True)

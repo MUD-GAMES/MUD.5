@@ -18,10 +18,10 @@ var loadUser = function loadUser() {
     "Content-Type": "application/json"
   };
   headers["Authorization"] = "Token ".concat(token);
-  return _axios["default"] // .get('http://127.0.0.1:8000/api/auth/user/', {headers, })
-  .get('https://mud5games.herokuapp.com/api/auth/user/', {
+  return _axios["default"].get('http://127.0.0.1:8000/api/auth/user/', {
     headers: headers
-  }).then(function (res) {
+  }) // .get('https://mud5games.herokuapp.com/api/auth/user/', {headers, })
+  .then(function (res) {
     return res.data;
   })["catch"](function (err) {
     console.log(err);
@@ -31,8 +31,8 @@ var loadUser = function loadUser() {
 exports.loadUser = loadUser;
 
 var loadPlayers = function loadPlayers() {
-  return _axios["default"] // .get('http://127.0.0.1:8000/api/auth/player/')
-  .get('https://mud5games.herokuapp.com/api/auth/player/').then(function (res) {
+  return _axios["default"].get('http://127.0.0.1:8000/api/auth/player/') // .get('https://mud5games.herokuapp.com/api/auth/player/')
+  .then(function (res) {
     return res.data;
   })["catch"](function (err) {
     console.log(err);
@@ -42,8 +42,8 @@ var loadPlayers = function loadPlayers() {
 exports.loadPlayers = loadPlayers;
 
 var loadRooms = function loadRooms() {
-  return _axios["default"] // .get('http://127.0.0.1:8000/api/auth/rooms/')
-  .get('https://mud5games.herokuapp.com/api/auth/rooms/').then(function (res) {
+  return _axios["default"].get('http://127.0.0.1:8000/api/auth/rooms/') // .get('https://mud5games.herokuapp.com/api/auth/rooms/')
+  .then(function (res) {
     console.log(res);
     return res.data;
   })["catch"](function (err) {
@@ -63,9 +63,9 @@ var flashMessage = function flashMessage() {
 
 var createNewUser = function createNewUser(axios, user) {
   console.log(user);
-  return axios // .post('http://127.0.0.1:8000/api/auth/register/', user)
-  // .post('https://zachstestbuilddjango.herokuapp.com/api/auth/register/', user)
-  .post('https://mud5games.herokuapp.com/api/auth/register/', user).then(function (res) {
+  return axios.post('http://127.0.0.1:8000/api/auth/register/', user) // .post('https://zachstestbuilddjango.herokuapp.com/api/auth/register/', user)
+  // .post('https://mud5games.herokuapp.com/api/auth/register/', user)
+  .then(function (res) {
     var message = document.getElementById('successMessage');
 
     if (res.status === 200) {
@@ -100,8 +100,8 @@ exports.createNewUser = createNewUser;
 var logInUser = function logInUser(axios, redirect, user) {
   console.log(user);
   return axios // .post('https://zachstestbuilddjango.herokuapp.com/api/auth/login/', user)
-  .post('https://mud5games.herokuapp.com/api/auth/login/', user) // .post('http://127.0.0.1:8000/api/auth/login/', user)
-  .then(function (res) {
+  // .post('https://mud5games.herokuapp.com/api/auth/login/', user)
+  .post('http://127.0.0.1:8000/api/auth/login/', user).then(function (res) {
     window.localStorage.setItem("token", res.data.token);
     window.localStorage.setItem("username", res.data.user.username);
     window.localStorage.setItem("id", res.data.user.id);
@@ -151,21 +151,45 @@ var newMap = function newMap(state) {
   // 	0, 1, 1, 1, 0, 1, 1, 1, 1, 0,
   // 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0
   // ];
+  //
 
   var tileW = 40,
       tileH = 40;
   var mapW = 10,
-      mapH = 10;
+      mapH = 200;
   var currentSecond = 0,
       frameCount = 0,
       framesLastSecond = 0,
       lastFrameTime = 0;
   var rooms = state.rooms;
+  var currentIndex = 11;
+  var realRooms = {};
   var floorTypes = {
     solid: 0,
     path: 1,
     room: 2
   };
+  var roomName = document.getElementById("room");
+  var desc = document.getElementById("desc");
+  var name = document.getElementById("name");
+  roomName.innerHTML = state.rooms[0].Room_Name;
+  name.innerHTML = state.user.username;
+  desc.innerHTML = state.rooms[0].Description;
+
+  var findRoom = function findRoom(move) {
+    if (realRooms[currentIndex]) {
+      roomName.innerHTML = realRooms[currentIndex].Room_Name;
+      desc.innerHTML = realRooms[currentIndex].Description;
+      console.log(realRooms[currentIndex]);
+      move = false;
+      return false;
+    } else {
+      console.log("path");
+      move = false;
+      return false;
+    }
+  };
+
   var tileTypes = {
     0: {
       colour: "#685b48",
@@ -233,8 +257,9 @@ var newMap = function newMap(state) {
     return Math.floor(Math.random() * (aLength - 1) + 2);
   };
 
+  var randomIndex = [];
+
   var arrayGen = function arrayGen(x, y) {
-    var randomIndex = [];
     var values = {};
     var runtime = rooms.length;
     var fborder = borderGen(x, y);
@@ -302,13 +327,19 @@ var newMap = function newMap(state) {
       var currentRoom = rooms[1];
       var prevIndx = 11;
       roomOrder.push(currentRoom);
+      realRooms[11] = currentRoom;
+      var startingRoom = x + 1;
+      randomIndex.push(startingRoom);
 
       var _loop = function _loop(i) {
         var newNumb = RandomNumGen(x, y);
 
         while (fborder.includes(newNumb) || randomIndex.includes(newNumb)) {
           newNumb = RandomNumGen(x, y);
-        }
+        } // } else {
+        // 	prevIndx = newNumb
+        // }
+
 
         var arrayObjKeys = Object.keys(currentRoom);
         var arrayObjValues = Object.values(currentRoom);
@@ -322,6 +353,7 @@ var newMap = function newMap(state) {
         currentRoom = newCurrentRoom[0];
         randomIndex.push(newNumb);
         roomOrder.push(currentRoom);
+        realRooms[newNumb] = newCurrentRoom[0];
       };
 
       for (var i = 1; i < rooms.length; i++) {
@@ -329,9 +361,8 @@ var newMap = function newMap(state) {
       }
     };
 
-    var startingRoom = x + 1;
-    randomIndex.push(startingRoom);
     directionLoop();
+    console.log(realRooms);
 
     for (var _x = 0; _x < randomIndex.length; _x++) {
       if (randomIndex[_x + 1] != undefined) {
@@ -352,20 +383,20 @@ var newMap = function newMap(state) {
 
     var border = borderGen(x, y);
     var anotherMap = aMap.map(function (id, index) {
-      if (border.includes(index)) {
+      if (border.includes.index) {
         return id = 0;
-      } else if (randomIndex.includes(index)) {
-        var raIndex = randomIndex.indexOf(index);
-        var thereturnid = roomOrder[raIndex].id;
+      } else if (realRooms[index]) {
+        // const raIndex = randomIndex.indexOf(index)
+        // const thereturnid = roomOrder[raIndex].id
+        // console.log(thereturnid)
         return id = 2;
       } else if (path.includes(index)) {
-        return id = 1;
+        return id = 1; // } else if (border.includes(index)) {
+        // 	return id = 0
       } else {
         return id = 0;
       }
     });
-    console.log(randomIndex);
-    console.log(path);
     return anotherMap;
   };
 
@@ -497,9 +528,9 @@ var newMap = function newMap(state) {
     tileFrom: [1, 1],
     tileTo: [1, 1],
     timeMoved: 0,
-    dimensions: [30, 30],
-    position: [45, 45],
-    delayMove: 700
+    dimensions: [10, 10],
+    position: [55, 55],
+    delayMove: 100
   });
 
   var toIndex = function toIndex(x, y) {
@@ -520,28 +551,43 @@ var newMap = function newMap(state) {
   var emove = false;
   var wmove = false;
   north.addEventListener("mousedown", function (e) {
-    nmove = true;
+    if (player.canMoveUp()) {
+      nmove = true;
+      currentIndex -= 10;
+    }
   });
   south.addEventListener("mousedown", function (e) {
     smove = true;
+
+    if (player.canMoveDown()) {
+      currentIndex += 10;
+    }
   });
   east.addEventListener("mousedown", function (e) {
     emove = true;
+
+    if (player.canMoveLeft()) {
+      currentIndex -= 1;
+    }
   });
   west.addEventListener("mousedown", function (e) {
     wmove = true;
+
+    if (player.canMoveRight()) {
+      currentIndex += 1;
+    }
   });
   north.addEventListener("mouseup", function (e) {
-    nmove = false;
+    nmove = findRoom();
   });
   south.addEventListener("mouseup", function (e) {
-    smove = false;
+    smove = findRoom();
   });
   east.addEventListener("mouseup", function (e) {
-    emove = false;
+    emove = findRoom();
   });
   west.addEventListener("mouseup", function (e) {
-    wmove = false;
+    wmove = findRoom();
   });
   viewport.screen = [document.getElementById('game').width, document.getElementById('game').height];
 
@@ -819,6 +865,7 @@ var GamePage = function GamePage(_ref) {
   var state = {
     loggedIn: false,
     user: {},
+    room: {},
     rooms: {},
     player: {},
     item: "",
@@ -835,12 +882,16 @@ var GamePage = function GamePage(_ref) {
         state.render(representation()); // console.log(canvas)
 
         (0, _loginHelper.loadPlayers)().then(function (res) {
+          console.log(res);
           var newPlayer = res.filter(function (p) {
+            console.log(p);
+
             if (p.the_user === state.user.id) {
               return p;
             }
 
             state.player = newPlayer;
+            console.log(newPlayer);
           });
         })["catch"](function (err) {
           console.log(err);
@@ -848,7 +899,6 @@ var GamePage = function GamePage(_ref) {
         (0, _loginHelper.loadRooms)().then(function (res) {
           state.rooms = res;
           (0, _map.newMap)(state);
-          console.log(state);
         })["catch"](function (err) {
           console.log(err);
         });
@@ -867,38 +917,11 @@ var GamePage = function GamePage(_ref) {
   // }
 
 
-  theLogIn(); // intent("movementNorth", function(e) {
-  // 	state.movement = innerHtml("north")
-  // 	console.log(state.movement)
-  // 	return false
-  // })
-  // intent("movementSouth", function(e) {
-  // 	state.movement = innerHtml("south")
-  // 	console.log(state.movement)
-  // 	return false
-  // })
-  // intent("movementEast", function(e) {
-  // 	state.movement = innerHtml("east")
-  // 	console.log(state.movement)
-  // 	return false
-  // })
-  // intent("movementWest", function(e) {
-  // 	state.movement = innerHtml("west")
-  // 	console.log(state.movement)
-  // 	return false
-  // })
-  //
-  // intent("pickUpItem", function(e) {
-  // 	let items = Array.from(listItems('items'))
-  // 	let checked = items.filter(i => {
-  // 		return i.checked
-  // 	})
-  // 	state.item = checked[0].value
-  // 	console.log(state.item)
-  // })
+  theLogIn();
+  var descRoom = document.getElementById("name");
 
   var representation = function representation() {
-    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div>\n\t\t\t\t<canvas id=\"game\" width=\"500\" height=\"500\"></canvas>\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p class=\"desc\">This is the room info</p>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"itemList\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"1\" type=\"radio\", name=\"item\" value=\"item1\">item 1</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"2\" type=\"radio\", name=\"item\" value=\"item2\">item 2</li>\n\t\t\t\t\t\t\t<li><input  class=\"items\" id=\"3\" type=\"radio\", name=\"item\" value=item3>item 3</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t<div class=\"itemControls\">\n\t\t\t\t\t\t<div class=\"pickup\" onclick=pickUpItem()>\n\t\t\t\t\t\t\tPickup Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"drop\">\n\t\t\t\t\t\t\tDrop Item\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" >N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" >E</div>\n\t\t\t\t\t\t\t<div id=\"west\" >W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" >S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\t" : "<div class=\"loginplease\">Log In To Play</div>", "\n\t");
+    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div>\n\t\t\t\t<canvas id=\"game\" width=\"500\" height=\"500\"></canvas>\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p id=\"room\" class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p id=\"desc\" class=\"desc\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div id =\"name\" class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" >N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" >E</div>\n\t\t\t\t\t\t\t<div id=\"west\" >W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" >S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\t" : "<div class=\"loginplease\">Log In To Play</div>", "\n\t");
   };
 
   return representation;
