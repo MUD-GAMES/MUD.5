@@ -106,6 +106,7 @@ var logInUser = function logInUser(axios, redirect, user) {
     window.localStorage.setItem("username", res.data.user.username);
     window.localStorage.setItem("id", res.data.user.id);
     redirect('/gametime');
+    window.location.reload();
     console.log(res.data);
     return res.data;
   })["catch"](function (err) {
@@ -181,11 +182,10 @@ var newMap = function newMap(state) {
       roomName.innerHTML = realRooms[currentIndex].Room_Name;
       desc.innerHTML = realRooms[currentIndex].Description;
       console.log(realRooms[currentIndex]);
-      move = false;
       return false;
     } else {
-      console.log("path");
-      move = false;
+      roomName.innerHTML = "Path";
+      desc.innerHTML = "Walking on path to another room";
       return false;
     }
   };
@@ -530,7 +530,7 @@ var newMap = function newMap(state) {
     timeMoved: 0,
     dimensions: [10, 10],
     position: [55, 55],
-    delayMove: 100
+    delayMove: 150
   });
 
   var toIndex = function toIndex(x, y) {
@@ -728,7 +728,10 @@ exports.innerHtml = innerHtml;
 
 var listItems = function listItems(className) {
   return document.getElementsByClassName(className);
-}; // export const getNames = () => {
+};
+
+exports.listItems = listItems;
+var loggedIn = window.localStorage.getItem("token"); // export const getNames = () => {
 // 	// return axios.get('https://djangoboiler.herokuapp.com/players')
 // 	return axios.get('http://127.0.0.1:8000/players')
 // 		.then(res => {
@@ -741,22 +744,28 @@ var listItems = function listItems(className) {
 // }
 //
 
-
-exports.listItems = listItems;
 router.get('/', function (req, res) {
-  render(_header.Header);
+  render(_header.Header, {
+    loggedIn: loggedIn
+  });
   render(_homePage.Home, {}, 'main');
 });
 router.get('/signup', function (req, res) {
-  render(_header.Header);
+  render(_header.Header, {
+    loggedIn: loggedIn
+  });
   render(_form.SignUpForm, {}, 'main');
 });
 router.get('/login', function (req, res) {
-  render(_header.Header);
+  render(_header.Header, {
+    loggedIn: loggedIn
+  });
   render(_form.LogInForm, {}, 'main');
 });
 router.get('/gametime', function (req, res) {
-  render(_header.Header);
+  render(_header.Header, {
+    loggedIn: loggedIn
+  });
   render(_gamePage.GamePage, {}, 'main');
 }); // initialize router
 
@@ -805,7 +814,6 @@ var SignUpForm = function SignUpForm(_ref) {
     state.password = (0, _main.value)("password"); // state.render(representation())
 
     (0, _loginHelper.createNewUser)(_axios["default"], state);
-    console.log(state);
     return false;
   });
 
@@ -921,7 +929,7 @@ var GamePage = function GamePage(_ref) {
   var descRoom = document.getElementById("name");
 
   var representation = function representation() {
-    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div>\n\t\t\t\t<canvas id=\"game\" width=\"500\" height=\"500\"></canvas>\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<p id=\"room\" class=\"room\">Test Room</p>\n\t\t\t\t\t\t<p id=\"desc\" class=\"desc\"></p>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div id =\"name\" class=\"name\">\n\t\t\t\t\t\t\tbadCompany55\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t\t<div class=\"item\">\n\t\t\t\t\t\t<ul>\n\t\t\t\t\t\t\t<li>item 1</li>\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" >N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" >E</div>\n\t\t\t\t\t\t\t<div id=\"west\" >W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t\t<div id=\"south\" >S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\t" : "<div class=\"loginplease\">Log In To Play</div>", "\n\t");
+    return "\n\t".concat(state.loggedIn === true ? "\n\t\t<div class=\"gamePageCont\">\n\t\t\t<div>\n\t\t\t\t<canvas id=\"game\" width=\"500\" height=\"500\"></canvas>\n\t\t\t</div>\n\t\t\t<div class=\"sideViewCont\">\n\t\t\t\t<div class=\"roomInfo\">\n\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t<div class=\"roomCont\">\n\t\t\t\t\t\t\t<label for=\"\">Room:</label>\n\t\t\t\t\t\t\t<p id=\"room\" class=\"room\">Test Room</p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"descCont\">\n\t\t\t\t\t\t\t<label for=\"\">Description:</label>\n\t\t\t\t\t\t\t<p id=\"desc\" class=\"desc\"></p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"playerInfo\">\n\t\t\t\t\t<div class=\"gInfo\">\n\t\t\t\t\t\t<div class=\"name\">\n\t\t\t\t\t\t\t<label for=\"\">Username:</label>\n\t\t\t\t\t\t\t<p id=\"name\"></p>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"controls\">\n\t\t\t\t\t<div class=\"directions\">\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"north\" class=\"button\" >N</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"east\" class=\"button\" >E</div>\n\t\t\t\t\t\t\t<div id=\"west\" class=\"button\">W</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t\t<div class=\"dir\">\n\t\t\t\t\t\t\t<div id=\"south\" class=\"button\">S</div>\n\t\t\t\t\t\t</div>\n\t\t\t\t\t</div>\n\t\t\t\t</div>\n\t\t\t</div>\n\t\t</div>\n\t\t\t" : "<div class=\"loginplease\">Log In To Play</div>", "\n\t");
   };
 
   return representation;
@@ -942,9 +950,10 @@ var _navigate = require("../helpers/navigate.js");
 var _main = require("../main.js");
 
 var Header = function Header(_ref) {
-  var render = _ref.render;
+  var loggedIn = _ref.loggedIn,
+      render = _ref.render;
   var state = {
-    loggedIn: "",
+    loggedIn: loggedIn,
     render: render
   };
   (0, _main.intent)("navigateLogin", function (e) {
@@ -952,24 +961,27 @@ var Header = function Header(_ref) {
   });
   (0, _main.intent)("navigateHome", function (e) {
     (0, _navigate.onNavigate)("/");
+    window.location.reload();
   });
   (0, _main.intent)("navigateGame", function (e) {
     (0, _navigate.onNavigate)("/gametime");
+    window.location.reload();
   });
   (0, _main.intent)("logout", function (e) {
-    if (state.loggedIn === true) {
+    if (state.loggedIn) {
       localStorage.removeItem("token");
       state.loggedIn = false;
+      (0, _navigate.onNavigate)('/');
+      window.location.reload();
       state.render(representation());
     } else {
-      state.loggedIn === false;
       state.render(representation());
     }
   });
   console.log(state.loggedIn);
 
   var representation = function representation() {
-    return "\n\t<div class=\"navCont\">\n\t\t<nav class=\"navbar\">\n\t\t\t<ul>\n\t\t\t\t<li class=\"navButton\" onclick=navigateHome()>Home</li>\n\t\t\t\t<li class=\"navButton\" onclick=navigateGame()>Play Game</li>\n\t\t\t\t<li class=\"navButton\">Account</li>\n\t\t\t\t".concat(state.loggedIn === true ? "<li class=\"navButton\" onclick=logout()>LogOut</li>" : "<li class=\"navButton\" onclick=navigateLogin()>Login</li>", "\n\t\t\t</ul>\n\t\t</nav>\n\t</div>\n\t");
+    return "\n\t<div class=\"navCont\">\n\t\t<nav class=\"navbar\">\n\t\t\t<ul>\n\t\t\t\t<li class=\"navButton\" onclick=navigateHome()>Home</li>\n\t\t\t\t<li class=\"navButton\" onclick=navigateGame()>Play Game</li>\n\t\t\t\t<li class=\"navButton\">Account</li>\n\t\t\t\t".concat(state.loggedIn ? "<li class=\"navButton\" onclick=logout()>LogOut</li>" : "<li class=\"navButton\" onclick=navigateLogin()>Login</li>", "\n\t\t\t</ul>\n\t\t</nav>\n\t</div>\n\t");
   };
 
   return representation;

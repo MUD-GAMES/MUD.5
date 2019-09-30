@@ -9,8 +9,8 @@ export let loadUser = () => {
 	};
 		headers["Authorization"] = `Token ${token}`
 		return axios
-			.get('http://127.0.0.1:8000/api/auth/user/', {headers, })
-			// .get('https://mud5games.herokuapp.com/api/auth/user/', {headers, })
+			// .get('http://127.0.0.1:8000/api/auth/user/', {headers, })
+			.get('https://mud5games.herokuapp.com/api/auth/user/', {headers, })
 			.then(res => {
 				return res.data
 			})
@@ -22,8 +22,8 @@ export let loadUser = () => {
 
 export let loadPlayers = () => {
 	return axios
-		.get('http://127.0.0.1:8000/api/auth/player/')
-		// .get('https://mud5games.herokuapp.com/api/auth/player/')
+		// .get('http://127.0.0.1:8000/api/auth/player/')
+		.get('https://mud5games.herokuapp.com/api/auth/player/')
 		.then(res => {
 			return res.data
 		})
@@ -34,8 +34,8 @@ export let loadPlayers = () => {
 
 export let loadRooms = () => {
 	return axios
-		.get('http://127.0.0.1:8000/api/auth/rooms/')
-		// .get('https://mud5games.herokuapp.com/api/auth/rooms/')
+		// .get('http://127.0.0.1:8000/api/auth/rooms/')
+		.get('https://mud5games.herokuapp.com/api/auth/rooms/')
 		.then(res => {
 			console.log(res)
 			return res.data
@@ -57,9 +57,9 @@ const flashMessage = () => {
 export const createNewUser = (axios, user) => {
 	console.log(user)
 	return axios
-		.post('http://127.0.0.1:8000/api/auth/register/', user)
+		// .post('http://127.0.0.1:8000/api/auth/register/', user)
 		// .post('https://zachstestbuilddjango.herokuapp.com/api/auth/register/', user)
-		// .post('https://mud5games.herokuapp.com/api/auth/register/', user)
+		.post('https://mud5games.herokuapp.com/api/auth/register/', user)
 		.then(res => {
 			let message = document.getElementById('successMessage')
 			if (res.status === 200) {
@@ -94,13 +94,14 @@ export const logInUser = (axios, redirect, user) => {
 	console.log(user)
 	return axios
 		// .post('https://zachstestbuilddjango.herokuapp.com/api/auth/login/', user)
-		// .post('https://mud5games.herokuapp.com/api/auth/login/', user)
-		.post('http://127.0.0.1:8000/api/auth/login/', user)
+		.post('https://mud5games.herokuapp.com/api/auth/login/', user)
+		// .post('http://127.0.0.1:8000/api/auth/login/', user)
 		.then(res => {
 			window.localStorage.setItem("token", res.data.token)
 			window.localStorage.setItem("username", res.data.user.username)
 			window.localStorage.setItem("id", res.data.user.id)
 			redirect('/gametime')
+			window.location.reload()
 			console.log(res.data)
 			return (res.data)
 		})

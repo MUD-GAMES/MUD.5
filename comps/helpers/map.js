@@ -40,11 +40,10 @@ export const newMap = (state) => {
 			roomName.innerHTML = realRooms[currentIndex].Room_Name
 			desc.innerHTML = realRooms[currentIndex].Description
 			console.log(realRooms[currentIndex])
-			move = false
 			return false
 		} else {
-			console.log("path")
-			move = false
+			roomName.innerHTML = "Path"
+			desc.innerHTML = "Walking on path to another room"
 			return false
 		}
 	}
@@ -307,7 +306,7 @@ export const newMap = (state) => {
 		timeMoved: 0,
 		dimensions: [10,10],
 		position: [55,55],
-		delayMove: 100,
+		delayMove: 150,
 	});
 
 	const toIndex = (x,y) => {

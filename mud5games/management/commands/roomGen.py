@@ -2,6 +2,8 @@ from django.core.management.base import BaseCommand, CommandError
 from django.contrib.auth.models import User
 from mud5games.models import Player, Room
 import random
+from faker import Faker
+fake = Faker()
 
 class Command(BaseCommand):
 
@@ -11,25 +13,25 @@ class Command(BaseCommand):
 
         r_outside = Room(Room_Name="Outside Cave Entrance",
                        Description="North of you, the cave mount beckons")
-        rooms = [
-
-        Room(Room_Name="Outside Cave Entrance",
-                       Description="North of you, the cave mount beckons"),
-
-        Room(Room_Name="Foyer", Description="""Dim light filters in from the south. Dusty
-        passages run north and east."""),
-
-        Room(Room_Name="Grand Overlook", Description="""A steep cliff appears before you, falling
-        into the darkness. Ahead to the north, a light flickers in
-        the distance, but there is no way across the chasm."""),
-
-        Room(Room_Name="Narrow Passage", Description="""The narrow passage bends here from west
-        to north. The smell of gold permeates the air."""),
-
-        Room(Room_Name="Treasure Chamber", Description="""You've found the long-lost treasure
-        chamber! Sadly, it has already been completely emptied by
-        earlier adventurers. The only exit is to the south."""),
-        ]
+        # rooms = [
+        #
+        # Room(Room_Name="Outside Cave Entrance",
+        #                Description="North of you, the cave mount beckons"),
+        #
+        # Room(Room_Name="Foyer", Description="""Dim light filters in from the south. Dusty
+        # passages run north and east."""),
+        #
+        # Room(Room_Name="Grand Overlook", Description="""A steep cliff appears before you, falling
+        # into the darkness. Ahead to the north, a light flickers in
+        # the distance, but there is no way across the chasm."""),
+        #
+        # Room(Room_Name="Narrow Passage", Description="""The narrow passage bends here from west
+        # to north. The smell of gold permeates the air."""),
+        #
+        # Room(Room_Name="Treasure Chamber", Description="""You've found the long-lost treasure
+        # chamber! Sadly, it has already been completely emptied by
+        # earlier adventurers. The only exit is to the south."""),
+        # ]
 
 
 
@@ -43,16 +45,16 @@ class Command(BaseCommand):
         # r_treasure.save()
         room_count = 100
         num_rooms = 1
-        indexes = []
+        indexes = [0]
         range_of_rooms = []
         for i in range(room_count):
             range_of_rooms.append(i)
 
         r_outside.save()
         while num_rooms < room_count:
-            index = random.randrange(4)
-            the_room = rooms[index]
-            save_room = Room(num_rooms, the_room.Room_Name, the_room.Description)
+            # index = random.randrange(4)
+            # the_room = rooms[index]
+            save_room = Room(num_rooms, fake.word() + " room", fake.paragraph())
             save_room.save()
             num_rooms += 1
 

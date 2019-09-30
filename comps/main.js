@@ -39,6 +39,8 @@ export let listItems = function(className) {
 	return document.getElementsByClassName(className)
 }
 
+const loggedIn = window.localStorage.getItem("token")
+
 // export const getNames = () => {
 // 	// return axios.get('https://djangoboiler.herokuapp.com/players')
 // 	return axios.get('http://127.0.0.1:8000/players')
@@ -54,22 +56,22 @@ export let listItems = function(className) {
 
 
 router.get('/', function(req, res) {
-	render(Header)
+	render(Header, {loggedIn})
 	render(Home, {},'main')
 })
 
 router.get('/signup', function(req, res) {
-	render(Header)
+	render(Header, {loggedIn})
 	render(SignUpForm, {},'main')
 })
 
 router.get('/login', function(req, res) {
-	render(Header)
+	render(Header, {loggedIn})
 	render(LogInForm, {}, 'main')
 })
 
 router.get('/gametime', function(req,res){
-	render(Header)
+	render(Header, {loggedIn})
 	render(GamePage, {}, 'main')
 })
 

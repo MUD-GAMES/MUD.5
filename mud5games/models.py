@@ -46,6 +46,7 @@ class Room(models.Model):
             destinationRoom = Room.objects.get(id=destinationRoomID)
         except Room.DoesNotExist:
             print("That room does not exist")
+            print(f'Room does not exist: {destinationRoomID}')
         if destinationRoom:
             self.connect = destinationRoomID
             self.save()

@@ -75,33 +75,35 @@ export let GamePage = function({render}) {
 			<div class="sideViewCont">
 				<div class="roomInfo">
 					<div class="descCont">
-						<p id="room" class="room">Test Room</p>
-						<p id="desc" class="desc"></p>
+						<div class="roomCont">
+							<label for="">Room:</label>
+							<p id="room" class="room">Test Room</p>
+						</div>
+						<div class="descCont">
+							<label for="">Description:</label>
+							<p id="desc" class="desc"></p>
+						</div>
 					</div>
 				</div>
 				<div class="playerInfo">
 					<div class="gInfo">
-						<div id ="name" class="name">
-							badCompany55
+						<div class="name">
+							<label for="">Username:</label>
+							<p id="name"></p>
 						</div>
-					</div>
-					<div class="item">
-						<ul>
-							<li>item 1</li>
-						</ul>
 					</div>
 				</div>
 				<div class="controls">
 					<div class="directions">
 						<div class="dir">
-							<div id="north" >N</div>
+							<div id="north" class="button" >N</div>
 						</div>
 						<div class="dir">
-							<div id="east" >E</div>
-							<div id="west" >W</div>
+							<div id="east" class="button" >E</div>
+							<div id="west" class="button">W</div>
 						</div>
-						<div class="directions">
-							<div id="south" >S</div>
+						<div class="dir">
+							<div id="south" class="button">S</div>
 						</div>
 					</div>
 				</div>

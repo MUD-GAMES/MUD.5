@@ -13,7 +13,6 @@ export let SignUpForm = function({render}) {
 		state.password = value("password")
 		// state.render(representation())
 		createNewUser(axios, state)
-		console.log(state)
 		return false
 	})
 

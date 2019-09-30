@@ -99,22 +99,22 @@ WSGI_APPLICATION = 'mud5.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE':'django.db.backends.postgresql',
-        'NAME':'mud5',
-        'USER': 'zac',
-        'PASSWORD': 'default',
-         'HOST': 'localhost',
-         'PORT':'5432'
+# DATABASES = {
+#     'default': {
+#         'ENGINE':'django.db.backends.postgresql',
+#         'NAME':'mud5',
+#         'USER': 'zac',
+#         'PASSWORD': 'default',
+#          'HOST': 'localhost',
+#          'PORT':'5432'
+#
+#     },
+#
+# }
 
-    },
-
-}
-
-# DATABASES = {}
+DATABASES = {}
 # DATABASES['default'] = dj_database_url.config(default='postgres://nkhgarbamwaqnh:88e2fc8e940ededf83f878f3e39319f0b87789f686323c1d57e671e877ff6d2a@ec2-54-235-181-55.compute-1.amazonaws.com:5432/d2qpgtac528fr6')
-# DATABASES['default'] = dj_database_url.config(default='postgres://ltryovvajgsgeb:4d79bd508c329c669f0abe7ed47c69ac71a1c9cdbe9faec7b9d4b67eba4f97ad@ec2-107-21-102-221.compute-1.amazonaws.com:5432/d585q7rs605nog')
+DATABASES['default'] = dj_database_url.config(default='postgres://ltryovvajgsgeb:4d79bd508c329c669f0abe7ed47c69ac71a1c9cdbe9faec7b9d4b67eba4f97ad@ec2-107-21-102-221.compute-1.amazonaws.com:5432/d585q7rs605nog')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
