@@ -34,4 +34,13 @@
   justify-content: space-around;
 }
 
+.aboutPage {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
+}
+
 /*# sourceMappingURL=index.css.map */
