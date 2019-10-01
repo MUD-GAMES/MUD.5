@@ -1,4 +1,4 @@
-[Mud5](http://mud5games.herokuapp.com/login) was created during our Computer Science's Build Week. The front-end was built using Vanilla Javascript or Plain JavaScript, SASS and canvas. The backend was built using Python and Django Framework
+[Mud5](http://mud5games.herokuapp.com/login) was created during our Computer Science's Build Week. The front-end was built using Vanilla Javascript or Plain JavaScript, SASS and Canvas HTML. The backend was built using Python and Django Framework
 
 ### Team
 
@@ -34,21 +34,24 @@ APIs are protected by built-in Django's OA.
 [Django Rest REST Framework](https://www.django-rest-framework.org/)
 [Postgresql](https://www.postgresql.org/)
 
-## to run app
-
-Install Python
-Install Pip and PIpenv. Click [here](https://docs.python-guide.org/dev/virtualenvs/) for documentations on how to install Pip on your machine
-Install Pipenv
-
-## Starting the server locally
+## To run the app
 
 Install Python
 
 ```bash
-check to see if Python installed in your machine:
-fire up your
+Check to see if Python is installed in your machine.
+Fire up your terminal:
 python --version
 
 ```
 
+Install Pip and Pipenv. Click [here](https://docs.python-guide.org/dev/virtualenvs/) for documentations on how to install Pip on your machine
+
+## Starting the server locally
+
 Make sure Postgresql is installed and set it up accordingly in settings.py
+Create a database. Please follow [Postgresql](https://www.postgresql.org/) for installation and set up your super user account.
+
+```bash
+
+```
