@@ -1,4 +1,4 @@
-[Mud5](http://mud5games.herokuapp.com/login) was created during our Computer Science's Build Week with 4 developers. the front-end was built using Vanilla Javascript or Plain JavaScript and SASS. The backend was built using Python and Django framework
+[Mud5](http://mud5games.herokuapp.com/login) was created during our Computer Science's Build Week with 4 developers. The front-end was built using Vanilla Javascript or Plain JavaScript, SASS and canvas. The backend was built using Python and Django framework
 
 ### Team
 
@@ -23,7 +23,13 @@ APIs are protected by built-in Django's OA.
 [Vanilla JavaScript or Plain JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [Axios](https://www.npmjs.com/package/axios)
 [Babelify](https://github.com/babel/babelify)
-[Bowserify]()
+[Bowserify](http://browserify.org/)
 [core-js](https://www.npmjs.com/package/core-js?activeTab=readme)
 [SASS](https://sass-lang.com/)
 [Budo](https://www.npmjs.com/package/budo)
+
+## Backend Dependencies/Packages
+
+[Django](https://docs.djangoproject.com/en/2.2/)
+[Django Rest REST Framework](https://www.django-rest-framework.org/)
+[Postgresql](https://www.postgresql.org/)
