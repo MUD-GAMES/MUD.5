@@ -34,7 +34,7 @@ APIs are protected by built-in Django's OA.
 [Django Rest REST Framework](https://www.django-rest-framework.org/)
 [Postgresql](https://www.postgresql.org/)
 
-## To run the app
+## To run the app locally
 
 Install Python
 
@@ -47,11 +47,43 @@ python --version
 
 Install Pip and Pipenv. Click [here](https://docs.python-guide.org/dev/virtualenvs/) for documentations on how to install Pip on your machine
 
-## Starting the server locally
-
 Make sure Postgresql is installed and set it up accordingly in settings.py
 Create a database. Please follow [Postgresql](https://www.postgresql.org/) for installation and set up your super user account.
 
-```bash
+Create a Database and name it whatever you want
+Go into mud5 folder > setting.py and look for DATABASE and paste this in there.
+'default': {
+'ENGINE':'django.db.backends.postgresql',
+'NAME':'you_data_base_name_here',
+'USER': 'postgres_user_name_here',
+'PASSWORD': 'postgres_password_here',
+'HOST': 'localhost',
+'PORT':'5432'
+}
+name = your database name you created with Postgres
+User: your super user or your user for that database you created
+Password: your postgres super user password or password created for that database
+Port: default port is 5432
 
+Run server migrate:
+Make sure you're in root of project folder and can see manage.py file
+Make sure you're activate your env when execute
+
+```bash
+python manage.py migrate
 ```
+
+to create an Admin login:
+
+```bash
+python manage.py createsuperuser
+follow instructions on the prompt
+```
+
+To fire up the server:
+
+```bash
+python manage.py runserver
+```
+
+by default Django will run at 8000. Go to localhost:8000/admin
